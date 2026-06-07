@@ -2,9 +2,12 @@ name: LinkedIn Poster
 
 on:
   schedule:
-    # 10:00 AM UTC every Tuesday and Thursday
-    - cron: "0 10 * * 2,4"
+    # 10:00 AM UTC every Monday and Saturday
+    - cron: "0 10 * * 1,6"
   workflow_dispatch:
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
 jobs:
   post:

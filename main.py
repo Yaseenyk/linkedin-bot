@@ -107,25 +107,50 @@ def _gemini_model():
     return genai.GenerativeModel(GEMINI_MODEL)
 
 
-def generate_linkedin_post(title, content, url):
+def _strip_json_fence(text):
+    text = text.strip()
+    if text.startswith("```"):
+        text = text.split("\n", 1)[1] if "\n" in text else text
+        if text.endswith("```"):
+            text = text[: -len("```")]
+    return text.strip()
+
+
+def generate_linkedin_content(title, content, url):
+    """Generate either a standard LinkedIn post or a poll for the article.
+
+    Returns a dict shaped as either:
+      {"type": "post", "text": "..."}
+      {"type": "poll", "commentary": "...", "question": "...", "options": [...]}
+    The model decides which format fits; polls are produced only occasionally
+    when the article naturally raises a sharp technical trade-off worth a vote.
+    """
     cta = f"Read the full article here: {url}"
 
     prompt = f"""You are an experienced software developer sharing practical, battle-tested engineering insights with your peers on LinkedIn. Write in the first person, with the credibility of someone who has actually shipped this in production — not a marketer.
 
-Write a highly SEO-optimized, 100% LinkedIn-native post based on the article below. Follow these rules exactly:
+Based on the article below, decide which of TWO formats best fits, then return ONLY a single JSON object (no markdown fences, no commentary around it).
 
-1. HOOK: Open with a single scroll-stopping line — make it contrarian, surprising, or a sharp question that stops an engineer mid-scroll.
+Most of the time, write a standard post. OCCASIONALLY — only when the article raises a genuine, debatable technical trade-off that engineers would have real opinions on — produce a poll instead to drive engagement. Roughly one in four articles should become a poll; otherwise prefer a post.
 
-2. FORMAT (LinkedIn-native): Every paragraph must be 1-2 sentences MAX for mobile readability. Put a blank line between every paragraph so the post is full of whitespace. No walls of text.
-
-3. SEO & KEYWORDS: Analyze the article, identify the core technical concepts, and naturally weave high-intent SEO keywords (the specific technologies, patterns, and problems engineers actually search for) into the body. Keep it natural — never keyword-stuff.
-
-4. VALUE: Extract exactly 3 specific, actionable technical takeaways from the article and present them as a cleanly spaced bulleted list (one blank line is fine between bullets if it aids readability).
-
-5. HASHTAGS: End the body with exactly 5 to 8 highly targeted, SEO-friendly hashtags on their own line — mix a few broad tech tags with niche, specific ones relevant to the article.
-
-6. CTA: After the hashtags, append this exact Call-to-Action as the final line, unchanged and pointing to the exact URL provided:
+== FORMAT A: standard post ==
+Return: {{"type": "post", "text": "<the full post>"}}
+The "text" value must follow these rules exactly:
+1. HOOK: Open with a single scroll-stopping line — contrarian, surprising, or a sharp question that stops an engineer mid-scroll.
+2. FORMAT (LinkedIn-native): Every paragraph 1-2 sentences MAX for mobile readability. A blank line between every paragraph so the post is full of whitespace. No walls of text.
+3. SEO & KEYWORDS: Identify the core technical concepts and naturally weave high-intent SEO keywords (the specific technologies, patterns, and problems engineers actually search for) into the body. Never keyword-stuff.
+4. VALUE: Extract exactly 3 specific, actionable technical takeaways as a cleanly spaced bulleted list.
+5. HASHTAGS: End the body with exactly 5 to 8 highly targeted, SEO-friendly hashtags on their own line — mix broad and niche tags.
+6. CTA: After the hashtags, append this exact Call-to-Action as the final line, unchanged:
 {cta}
+
+== FORMAT B: poll ==
+Return: {{"type": "poll", "commentary": "<intro text>", "question": "<poll question>", "options": ["<opt1>", "<opt2>", ...]}}
+- "commentary": a short, LinkedIn-native intro (a hook line, 1-2 sentences of context, then 5-8 hashtags on their own line, then the CTA line "{cta}"). Same whitespace-rich, mobile-friendly style as a post.
+- "question": the poll question itself, a focused technical question. MAX 140 characters.
+- "options": 3 to 4 distinct, mutually exclusive answer choices. Each option short (ideally under 30 characters). Make them real, defensible positions an engineer would pick between.
+
+Return strictly valid JSON for exactly one of the two formats.
 
 Article title: {title}
 
@@ -135,15 +160,45 @@ Article content:
 
     model = _gemini_model()
     response = model.generate_content(prompt)
-    post = (response.text or "").strip()
+    raw = _strip_json_fence(response.text or "")
+
+    try:
+        data = json.loads(raw)
+    except json.JSONDecodeError:
+        data = None
+
+    if isinstance(data, dict) and data.get("type") == "poll" and isinstance(data.get("options"), list):
+        options = [str(o).strip() for o in data["options"] if str(o).strip()][:4]
+        commentary = (data.get("commentary") or "").strip()
+        if cta not in commentary:
+            commentary = f"{commentary}\n\n{cta}".strip()
+        return {
+            "type": "poll",
+            "commentary": commentary,
+            "question": (data.get("question") or "").strip()[:140],
+            "options": options,
+        }
+
+    if isinstance(data, dict) and isinstance(data.get("text"), str):
+        post = data["text"].strip()
+    else:
+        post = raw
 
     if cta not in post:
         post = f"{post}\n\n{cta}"
 
-    return post
+    return {"type": "post", "text": post}
 
 
 LINKEDIN_API_BASE = "https://api.linkedin.com"
+LINKEDIN_API_VERSION = os.environ.get("LINKEDIN_API_VERSION", "202401")
+
+
+def _linkedin_token():
+    token = os.environ.get("LINKEDIN_ACCESS_TOKEN")
+    if not token:
+        raise RuntimeError("LINKEDIN_ACCESS_TOKEN is not set. Add it to your .env file.")
+    return token
 
 
 def _linkedin_author_urn(token):
@@ -157,10 +212,7 @@ def _linkedin_author_urn(token):
 
 
 def publish_to_linkedin(text):
-    token = os.environ.get("LINKEDIN_ACCESS_TOKEN")
-    if not token:
-        raise RuntimeError("LINKEDIN_ACCESS_TOKEN is not set. Add it to your .env file.")
-
+    token = _linkedin_token()
     author = _linkedin_author_urn(token)
     payload = {
         "author": author,
@@ -187,6 +239,46 @@ def publish_to_linkedin(text):
     return resp.headers.get("x-restli-id") or resp.json().get("id")
 
 
+def publish_poll_to_linkedin(commentary, question, options):
+    if not 2 <= len(options) <= 4:
+        raise ValueError(f"A LinkedIn poll needs 2 to 4 options, got {len(options)}.")
+
+    token = _linkedin_token()
+    author = _linkedin_author_urn(token)
+    payload = {
+        "author": author,
+        "commentary": commentary,
+        "visibility": "PUBLIC",
+        "distribution": {
+            "feedDistribution": "MAIN_FEED",
+            "targetEntities": [],
+            "thirdPartyDistributionChannels": [],
+        },
+        "lifecycleState": "PUBLISHED",
+        "isReshareDisabledByAuthor": False,
+        "content": {
+            "poll": {
+                "question": question[:140],
+                "options": [{"text": option} for option in options],
+                "settings": {"duration": "ONE_WEEK"},
+            }
+        },
+    }
+    resp = requests.post(
+        f"{LINKEDIN_API_BASE}/rest/posts",
+        headers={
+            "Authorization": f"Bearer {token}",
+            "Content-Type": "application/json",
+            "X-Restli-Protocol-Version": "2.0.0",
+            "LinkedIn-Version": LINKEDIN_API_VERSION,
+        },
+        json=payload,
+        timeout=30,
+    )
+    resp.raise_for_status()
+    return resp.headers.get("x-restli-id") or (resp.json().get("id") if resp.text else None)
+
+
 def next_unpublished_post(roots, published):
     for root in roots:
         for post_url in discover_post_urls(root):
@@ -204,21 +296,40 @@ def process_next_url():
         return None
 
     article = scrape(url)
-    post = generate_linkedin_post(article["title"], article["content"], url)
-    post_id = publish_to_linkedin(post)
+    content = generate_linkedin_content(article["title"], article["content"], url)
+
+    if content["type"] == "poll":
+        post_id = publish_poll_to_linkedin(
+            content["commentary"], content["question"], content["options"]
+        )
+        preview = (
+            f"{content['commentary']}\n\nPOLL: {content['question']}\n"
+            + "\n".join(f"  - {opt}" for opt in content["options"])
+        )
+    else:
+        post_id = publish_to_linkedin(content["text"])
+        preview = content["text"]
+
     print(f"Successfully published to LinkedIn (post id: {post_id})")
 
-    published[url] = {
+    record = {
         "status": "published",
+        "type": content["type"],
         "timestamp": datetime.now(timezone.utc).isoformat(),
         "title": article["title"],
         "image_url": article["image_url"],
-        "post": post,
         "linkedin_post_id": post_id,
     }
+    if content["type"] == "poll":
+        record["commentary"] = content["commentary"]
+        record["question"] = content["question"]
+        record["options"] = content["options"]
+    else:
+        record["post"] = content["text"]
+    published[url] = record
     save_published(published)
 
-    return {"url": url, "post": post, "post_id": post_id, **article}
+    return {"url": url, "post": preview, "post_id": post_id, **article}
 
 
 if __name__ == "__main__":
