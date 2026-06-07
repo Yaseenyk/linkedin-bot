@@ -191,7 +191,7 @@ Article content:
 
 
 LINKEDIN_API_BASE = "https://api.linkedin.com"
-LINKEDIN_API_VERSION = os.environ.get("LINKEDIN_API_VERSION", "202401")
+LINKEDIN_API_VERSION = os.environ.get("LINKEDIN_API_VERSION", "202605")
 
 
 def _linkedin_token():
@@ -260,7 +260,7 @@ def publish_poll_to_linkedin(commentary, question, options):
             "poll": {
                 "question": question[:140],
                 "options": [{"text": option} for option in options],
-                "settings": {"duration": "ONE_WEEK"},
+                "settings": {"duration": "SEVEN_DAYS"},
             }
         },
     }
