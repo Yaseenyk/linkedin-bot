@@ -110,17 +110,21 @@ def _gemini_model():
 def generate_linkedin_post(title, content, url):
     cta = f"Read the full article here: {url}"
 
-    prompt = f"""You are a senior content strategist writing for a professional LinkedIn audience.
+    prompt = f"""You are an experienced software developer sharing practical, battle-tested engineering insights with your peers on LinkedIn. Write in the first person, with the credibility of someone who has actually shipped this in production — not a marketer.
 
-Write a highly engaging, professional LinkedIn post based on the article below.
+Write a highly SEO-optimized, 100% LinkedIn-native post based on the article below. Follow these rules exactly:
 
-Requirements:
-- Open with a strong hook that makes people stop scrolling.
-- Use clear spacing between short paragraphs so the post is easy to read on mobile.
-- Include a few bullet points that highlight the key takeaways.
-- Keep the tone confident, insightful, and human (not salesy or robotic).
-- End with a few relevant, professional hashtags.
-- After the hashtags, append this exact Call-to-Action as the final line, unchanged:
+1. HOOK: Open with a single scroll-stopping line — make it contrarian, surprising, or a sharp question that stops an engineer mid-scroll.
+
+2. FORMAT (LinkedIn-native): Every paragraph must be 1-2 sentences MAX for mobile readability. Put a blank line between every paragraph so the post is full of whitespace. No walls of text.
+
+3. SEO & KEYWORDS: Analyze the article, identify the core technical concepts, and naturally weave high-intent SEO keywords (the specific technologies, patterns, and problems engineers actually search for) into the body. Keep it natural — never keyword-stuff.
+
+4. VALUE: Extract exactly 3 specific, actionable technical takeaways from the article and present them as a cleanly spaced bulleted list (one blank line is fine between bullets if it aids readability).
+
+5. HASHTAGS: End the body with exactly 5 to 8 highly targeted, SEO-friendly hashtags on their own line — mix a few broad tech tags with niche, specific ones relevant to the article.
+
+6. CTA: After the hashtags, append this exact Call-to-Action as the final line, unchanged and pointing to the exact URL provided:
 {cta}
 
 Article title: {title}
