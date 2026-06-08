@@ -2,8 +2,8 @@ name: LinkedIn Poster
 
 on:
   schedule:
-    # 10:00 AM UTC every Monday and Saturday
-    - cron: "0 10 * * 1,6"
+    # 10:00 AM UTC every day
+    - cron: "0 10 * * *"
   workflow_dispatch:
 
 env:
