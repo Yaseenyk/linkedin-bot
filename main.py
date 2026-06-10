@@ -5,8 +5,8 @@ from datetime import datetime, timezone
 from pathlib import Path
 from urllib.parse import urljoin, urlparse
 
-import google.generativeai as genai
 import requests
+from openai import OpenAI
 from bs4 import BeautifulSoup
 from dotenv import load_dotenv
 
@@ -15,7 +15,7 @@ load_dotenv()
 URLS_FILE = Path("urls.txt")
 PUBLISHED_FILE = Path("published.json")
 
-GEMINI_MODEL = "gemini-2.5-flash"
+OPENAI_MODEL = "gpt-5.5"
 
 BLOG_SECTION = "/blog/"
 
@@ -99,12 +99,11 @@ def discover_post_urls(page_url):
     return posts
 
 
-def _gemini_model():
-    api_key = os.environ.get("GEMINI_API_KEY")
+def _openai_client():
+    api_key = os.environ.get("OPENAI_API_KEY")
     if not api_key:
-        raise RuntimeError("GEMINI_API_KEY is not set. Add it to your .env file.")
-    genai.configure(api_key=api_key)
-    return genai.GenerativeModel(GEMINI_MODEL)
+        raise RuntimeError("OPENAI_API_KEY is not set. Add it to your .env file.")
+    return OpenAI(api_key=api_key)
 
 
 def _strip_json_fence(text):
@@ -158,9 +157,13 @@ Article content:
 {content}
 """
 
-    model = _gemini_model()
-    response = model.generate_content(prompt)
-    raw = _strip_json_fence(response.text or "")
+    client = _openai_client()
+    response = client.chat.completions.create(
+        model=OPENAI_MODEL,
+        messages=[{"role": "user", "content": prompt}],
+        response_format={"type": "json_object"},
+    )
+    raw = _strip_json_fence(response.choices[0].message.content or "")
 
     try:
         data = json.loads(raw)

@@ -1,4 +1,4 @@
 beautifulsoup4
 requests
-google-generativeai
+openai
 python-dotenv
