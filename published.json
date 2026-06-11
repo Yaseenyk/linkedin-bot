@@ -58,5 +58,21 @@
     "image_url": "",
     "linkedin_post_id": "urn:li:share:7470484312677642240",
     "post": "The embedding model is rarely the reason your semantic search feels bad.\n\nI\u2019ve seen teams swap embedding models three times when the real bug was simpler: they were embedding the wrong unit of text.\n\nSemantic search works because vector embeddings turn meaning into geometry. Once text becomes a vector, cosine similarity and nearest-neighbor search decide what \u201cclose enough\u201d means.\n\nBut production search is where the trade-offs show up.\n\nBrute-force k-NN is accurate, but it hits a wall fast. Approximate nearest neighbor indexes like HNSW and IVF usually win because users care more about fast, relevant results than perfect recall delivered too late.\n\nThe bigger lesson for RAG systems: chunking strategy often matters more than the vector database, the embedding dimension, or the latest model leaderboard.\n\n\u2022 Design chunks around user questions, not parser convenience. The unit you embed is the unit you retrieve.\n\n\u2022 Benchmark recall and latency together. HNSW, IVF, and other ANN indexes are only \u201cbetter\u201d if they meet your production SLA with acceptable retrieval quality.\n\n\u2022 Treat semantic search as a retrieval system, not a model feature. Measure query intent, chunk quality, reranking, and failure cases before blaming embeddings.\n\nIf your RAG pipeline is returning vague answers, don\u2019t start by changing the LLM.\n\nStart by looking at what your vector search layer is actually retrieving.\n\n#SemanticSearch #VectorEmbeddings #RAG #VectorDatabase #ApproximateNearestNeighbor #HNSW #MachineLearning\nRead the full article here: https://yaseenyk.github.io/portfolio/blog/vector-foundations-semantic-search/"
+  },
+  "https://yaseenyk.github.io/portfolio/blog/rag-grounding-the-agent/": {
+    "status": "published",
+    "type": "poll",
+    "timestamp": "2026-06-11T13:50:39.365920+00:00",
+    "title": "RAG: Grounding the Agent (My streamerOS Approach)",
+    "image_url": "",
+    "linkedin_post_id": "urn:li:ugcPost:7470834889718951936",
+    "commentary": "The hardest RAG bug I\u2019ve shipped around wasn\u2019t hallucination \u2014 it was pretending low-confidence retrieval was good enough.\n\nIn a production support agent, I\u2019d rather return \u201cI don\u2019t know\u201d than let an LLM improvise from weak chunks. But that threshold is a real product/engineering trade-off: trust vs coverage.\n\n#RAG #RetrievalAugmentedGeneration #LLM #VectorSearch #AIEngineering #PromptEngineering #MLOps\nRead the full article here: https://yaseenyk.github.io/portfolio/blog/rag-grounding-the-agent/",
+    "question": "When RAG retrieval confidence is low, what should the agent do?",
+    "options": [
+      "Refuse immediately",
+      "Ask a clarifying question",
+      "Answer with caveats",
+      "Escalate to human"
+    ]
   }
 }
