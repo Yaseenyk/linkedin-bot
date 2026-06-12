@@ -74,5 +74,14 @@
       "Answer with caveats",
       "Escalate to human"
     ]
+  },
+  "https://yaseenyk.github.io/portfolio/blog/agentic-control-loops/": {
+    "status": "published",
+    "type": "post",
+    "timestamp": "2026-06-12T12:48:47.968788+00:00",
+    "title": "Agentic Control Loops: Building Autonomous Systems That Stop",
+    "image_url": "",
+    "linkedin_post_id": "urn:li:share:7471181710844379136",
+    "post": "The hardest part of an LLM agent is not making it act \u2014 it is making it stop.\n\nI\u2019ve seen teams try to fix weak agents by stuffing more instructions into the prompt.\n\nThat helps for demos, but it does not turn a chatbot into an autonomous system.\n\nThe real shift is the agentic control loop: observe state, choose one action, call a tool, inspect the result, then repeat.\n\nThat loop is where LLM agents become useful for workflows like search, selection, payment, grounded RAG, and router-based orchestration.\n\nBut the production failure mode is brutal: runaway loops that burn tokens, hammer tools, and never decide they are done.\n\nHere are the 3 things I now treat as non-negotiable when building tool-calling agents:\n\n- Design termination first: every agent needs an explicit success condition and a hard step budget before it ever calls a tool.\n\n- Keep tools narrow and typed: give the model a defined toolset with predictable inputs, outputs, errors, and retry behavior.\n\n- Reduce state on every turn: summarize, prune, and preserve only what the next decision needs so the context window and token budget do not collapse.\n\nThe reasoning step gets the attention.\n\nThe state management decides whether the system survives production traffic.\n\nIf you are building LLM agents, multi-agent workflows, RAG agents, or edge AI systems, the loop is not the hard part anymore.\n\nThe hard part is controlling the loop.\n\n#AIAgents #LLMAgents #AgenticAI #ToolCalling #RAG #PromptEngineering #AIEngineering\nRead the full article here: https://yaseenyk.github.io/portfolio/blog/agentic-control-loops/"
   }
 }
