@@ -146,5 +146,21 @@
     "image_url": "",
     "linkedin_post_id": "urn:li:share:7473728045774843904",
     "post": "Your AI bill is not a finance problem \u2014 it is an architecture problem.\n\nI\u2019ve seen teams obsess over prompt tweaks while the real leak was simpler: every request went to the most expensive model, every repeated question was paid for again, and nobody could explain which tenant drove the spend.\n\nThat does not scale.\n\nFor production AI systems, FinOps for AI means treating token spend like unit economics. Cost per request becomes something you design, measure, and enforce \u2014 not something you discover on the cloud invoice.\n\nThe three levers I\u2019d reach for first are semantic caching, LLM routing, and per-tenant cost attribution.\n\n- Add a semantic cache before model calls. Embed incoming queries, detect near-duplicates, and return verified prior answers when possible; a cache hit is not a cheaper LLM call, it is no LLM call.\n\n- Route by query difficulty, not developer convenience. Send easy requests to a smaller, cheaper model, escalate hard cases to a frontier model, and use quality gates to catch bad routes.\n\n- Tag every AI request with tenant, feature, model, token count, and cost. Without a cost ledger, you cannot do showback, budget alerts, margin analysis, or root-cause a runaway loop.\n\nThe biggest shift is mental: prompt optimization is tactical, but governing the AI cost curve is architecture.\n\nIf you are building multi-tenant SaaS with LLMs, token cost attribution should be as normal as request tracing, structured logging, and rate limiting.\n\n#FinOps #AIFinOps #LLMOps #SemanticCaching #LLMRouting #CostOptimization #AIEngineering\nRead the full article here: https://yaseenyk.github.io/portfolio/blog/finops-for-ai-cost-governance/"
+  },
+  "https://yaseenyk.github.io/portfolio/blog/evaluation-driven-development-golden-dataset/": {
+    "status": "published",
+    "type": "poll",
+    "timestamp": "2026-06-20T11:49:56.291216+00:00",
+    "title": "Evaluation-Driven Development: The Golden Dataset as a CI Gate",
+    "image_url": "",
+    "linkedin_post_id": "urn:li:ugcPost:7474066000779419648",
+    "commentary": "Prompt changes are code changes \u2014 but most teams still ship them without tests.\n\nI\u2019ve learned the hard way that a golden dataset in CI is what turns \u201cthis prompt feels better\u201d into an actual regression check. The debate is where to draw the line: block merges, warn engineers, or trust review.\n\n#LLMOps #PromptEngineering #EvaluationDrivenDevelopment #GoldenDataset #AIEvaluation #ContinuousIntegration #MachineLearningEngineering\nRead the full article here: https://yaseenyk.github.io/portfolio/blog/evaluation-driven-development-golden-dataset/",
+    "question": "Should LLM prompt changes be blocked in CI on golden dataset regressions?",
+    "options": [
+      "Always block merge",
+      "Warn, don't block",
+      "Block critical paths only",
+      "Manual review only"
+    ]
   }
 }
