@@ -162,5 +162,14 @@
       "Block critical paths only",
       "Manual review only"
     ]
+  },
+  "https://yaseenyk.github.io/portfolio/blog/memory-and-stateful-ai-architecture/": {
+    "status": "published",
+    "type": "post",
+    "timestamp": "2026-06-21T12:04:59.703794+00:00",
+    "title": "Memory & Stateful AI: Beyond the Context Window",
+    "image_url": "",
+    "linkedin_post_id": "urn:li:share:7474432177938653184",
+    "post": "Your AI agent doesn\u2019t need a bigger context window \u2014 it needs a memory hierarchy.\n\nI\u2019ve seen teams try to make stateful AI agents by appending the entire chat transcript into the prompt.\n\nIt works in the demo, then falls apart in production when token costs spike, latency climbs, and truncation quietly deletes the context the user actually cared about.\n\nThe context window is RAM, not disk.\n\nFor real AI memory architecture, I treat the prompt as a small working buffer backed by slower, cheaper stores: episodic memory for summarized interactions and semantic memory for durable user facts.\n\nThe important shift is this: don\u2019t load history into the model by default.\n\nRetrieve only the relevant slice using vector search, keyed lookups, and a strict context budget.\n\nThree production lessons I\u2019d apply immediately:\n\n\u2022 Separate memory by lifetime: keep the current turn verbatim, store older conversations as vector-indexed summaries, and promote stable facts like preferences or account tier into a semantic store.\n\n\u2022 Design the write path, not just retrieval: after each response, summarize the exchange, extract durable facts, and decide what should be forgotten before memory becomes noisy.\n\n\u2022 Treat summarization as a feature: lossy compression keeps stateful AI usable because remembering everything is just as broken as remembering nothing.\n\nThis is the same pattern we use everywhere else in software engineering: hot working memory, durable storage, indexes, eviction, and retrieval.\n\nLLMs didn\u2019t remove those constraints.\n\nThey just made them easier to ignore until the bill arrives.\n\n#ArtificialIntelligence #LLMEngineering #StatefulAI #VectorSearch #RAG #AIAgents #SemanticMemory\n\nRead the full article here: https://yaseenyk.github.io/portfolio/blog/memory-and-stateful-ai-architecture/"
   }
 }
