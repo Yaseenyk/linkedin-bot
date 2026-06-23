@@ -180,5 +180,21 @@
     "image_url": "",
     "linkedin_post_id": "urn:li:share:7474841723563679744",
     "post": "\u201cI used ChatGPT\u201d is not a portfolio signal anymore.\n\nI\u2019ve reviewed enough AI projects to know the difference between a demo and something I\u2019d trust in production.\n\nThe signal is not the API call. It\u2019s the system around it: RAG retrieval design, grounding contracts, agent control loops, fail-closed guardrails, and latency budgets that survive real users.\n\nIf I\u2019m hiring for a lead AI engineering role, I want to see the decisions behind the build.\n\nWhy were chunks shaped that way? Where does determinism live? What happens when the model hallucinates? How did you keep time-to-first-token under 300ms?\n\nA strong AI-native portfolio should behave like a production AI system, not a brochure about one.\n\nThat means typed content, structured data, JSON-LD, answer-engine optimization, clear architecture diagrams, and explicit tradeoffs that show how you think under constraints.\n\nHere are the 3 things I\u2019d ship if I were rebuilding my portfolio for senior or lead AI roles:\n\n\u2022 Show architecture, not screenshots \u2014 include the RAG pipeline, model boundaries, fallback paths, observability, and edge latency strategy.\n\n\u2022 Document tradeoffs \u2014 explain why you chose retrieval over fine-tuning, where guardrails fail closed, and what you sacrificed for reliability or speed.\n\n\u2022 Make the portfolio machine-readable \u2014 use TechArticle schema, Course JSON-LD, entity graphs, and direct-answer summaries so AI search can cite you accurately.\n\nThe bar has moved.\n\nA portfolio used to prove you could present work. Now it can prove you can design, ship, and operate production AI systems.\n\n#AIEngineering #RAG #LLMOps #ProductionAI #AEO #StructuredData #NextJS\nRead the full article here: https://yaseenyk.github.io/portfolio/blog/ai-native-portfolio-landing-lead-roles/"
+  },
+  "https://yaseenyk.github.io/portfolio/blog/advanced-redis-caching-strategies/": {
+    "status": "published",
+    "type": "poll",
+    "timestamp": "2026-06-23T12:27:44.765495+00:00",
+    "title": "Advanced Redis Caching Strategies: Slashing API Latency 25%",
+    "image_url": "",
+    "linkedin_post_id": "urn:li:ugcPost:7475162678995361792",
+    "commentary": "Redis caching is where \u201csimple\u201d architecture quietly becomes production architecture.\n\nI\u2019ve seen API latency drop 25% without touching the database engine \u2014 just by moving caching into middleware, tightening TTLs, and treating invalidation as part of the write path.\n\nThe hard part is choosing the right strategy before stale data, cache stampedes, or messy key design bite you.\n\n#Redis #Caching #BackendEngineering #APIPerformance #SystemDesign #CacheInvalidation #DistributedSystems\nRead the full article here: https://yaseenyk.github.io/portfolio/blog/advanced-redis-caching-strategies/",
+    "question": "For read-heavy APIs, what\u2019s your default Redis caching strategy?",
+    "options": [
+      "Cache-aside + TTL",
+      "Write-through",
+      "Hybrid by data shape",
+      "Avoid app caching"
+    ]
   }
 }
