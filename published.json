@@ -196,5 +196,14 @@
       "Hybrid by data shape",
       "Avoid app caching"
     ]
+  },
+  "https://yaseenyk.github.io/portfolio/blog/websocket-telemetry-at-scale/": {
+    "status": "published",
+    "type": "post",
+    "timestamp": "2026-06-24T12:13:21.414546+00:00",
+    "title": "WebSocket Telemetry at Scale: Real-Time Streaming Architectures",
+    "image_url": "",
+    "linkedin_post_id": "urn:li:share:7475521444542730240",
+    "post": "A WebSocket demo is easy. A WebSocket telemetry system behind a load balancer is where the bugs start.\n\nI\u2019ve seen the naive version ship: one Node.js process holds every socket in memory and broadcasts telemetry locally.\n\nIt works beautifully until you add a second instance and realize half your users are connected to a server that never saw the event.\n\nAt scale, real-time streaming architecture is mostly about fanout control, subscription scope, and backpressure. The WebSocket is just the pipe.\n\n- Add a shared pub/sub backplane for horizontal scaling. Redis Pub/Sub, NATS, Kafka, or another event bus lets every WebSocket server instance receive the events it needs to broadcast.\n\n- Model subscriptions as rooms, channels, tenants, dashboards, or device streams. Don\u2019t broadcast every telemetry metric to every connected client unless you enjoy paying for wasted CPU and bandwidth.\n\n- Throttle high-frequency telemetry on the server before it hits the socket. Sampling, debouncing, and latest-value delivery usually beat flooding React dashboards with frames they can\u2019t render.\n\nThe biggest production lesson for me: backpressure discovered in the browser is already late.\n\nIf the server emits at a rate the client cannot consume, you don\u2019t have a real-time system. You have a distributed denial-of-wallet attack against yourself.\n\n#WebSockets #RealTimeData #Telemetry #DistributedSystems #SystemDesign #RedisPubSub #ReactJS\nRead the full article here: https://yaseenyk.github.io/portfolio/blog/websocket-telemetry-at-scale/"
   }
 }
