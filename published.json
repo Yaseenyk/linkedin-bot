@@ -239,5 +239,14 @@
       "Service layer",
       "Policy engine"
     ]
+  },
+  "https://yaseenyk.github.io/portfolio/blog/tauri-v2-tokio-console-18-cpu-with-4-concurrent-streams/": {
+    "status": "published",
+    "type": "post",
+    "timestamp": "2026-06-28T11:40:14.549351+00:00",
+    "title": "Tauri v2 + tokio-console: 1.8% CPU with 4 concurrent streams",
+    "image_url": "",
+    "linkedin_post_id": "urn:li:share:7476962663739080705",
+    "post": "\u201cIt\u2019s just network I/O\u201d is not a performance strategy.\n\nI\u2019ve seen Tauri v2 backends burn surprising CPU while doing nothing that looks CPU-heavy: streaming data, writing files, waiting on sockets.\n\nThe problem usually wasn\u2019t Rust being slow or Tokio being expensive.\n\nIt was wake storms, unbounded fan-out, or one accidental blocking call sitting on the async runtime.\n\nThis is where tokio-console earns its place in my dev loop.\n\nInstead of guessing, I can see hot tasks, waker churn, poll durations, resource usage, and scheduler behavior while the Tauri app is actually running.\n\nFor a Tauri v2 + Tokio media backend, that workflow got four concurrent streams settling around ~1.8% CPU on laptop-class hardware in a release build.\n\nThe fixes were not heroic.\n\nThey were boring, measurable runtime hygiene:\n\n- Enable Tokio unstable instrumentation only in dev builds, then run tokio-console beside the app to inspect tasks, wakers, schedules, and poll durations before changing code.\n\n- Put hard bounds on fan-out with bounded channels, semaphores, and backpressure so concurrent streams don\u2019t become accidental task explosions.\n\n- Move CPU-heavy work like decoding, resampling, thumbnailing, or synchronous file operations away from the async scheduler using spawn_blocking or a dedicated worker pool.\n\nThe lesson I keep relearning: low CPU in async Rust comes from controlling wakeups, blocking, and concurrency shape \u2014 not from assuming async I/O is automatically cheap.\n\nIf your Tauri backend idles above 5\u201310% CPU while mostly moving bytes, I\u2019d look at tokio-console before touching algorithms.\n\n#Tauri #RustLang #Tokio #AsyncRust #TokioConsole #PerformanceEngineering #DesktopApps\nRead the full article here: https://yaseenyk.github.io/portfolio/blog/tauri-v2-tokio-console-18-cpu-with-4-concurrent-streams/"
   }
 }
