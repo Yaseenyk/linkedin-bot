@@ -257,5 +257,21 @@
     "image_url": "",
     "linkedin_post_id": "urn:li:share:7477360359398359041",
     "post": "I stopped trusting 30-minute heap profiles after a Rust service looked healthy\u2026 then fragmented itself 6 hours later.\n\nOn streamerOS, we ingest RTMP/WebRTC, composite overlays, and encode for long broadcasts. The memory bugs were not obvious leaks; they were lifetime mismatches showing up as RSS drift.\n\nThe fix was not \u201cuse Rust harder.\u201d\n\nWe reworked allocation around region-based allocation: long-lived state in stable handle tables, short-lived render/layout/filter data in bump arenas, and fixed caps everywhere memory could grow under pressure.\n\nFor hot ephemeral allocations, bumpalo worked well because the lifetime boundary was explicit: GOP, scene tick, or render frame. Allocate fast, reset the arena, move on.\n\nFor state that survives epochs, I used typed handles with slotmap instead of passing references across tasks. No &'arena T across actors, no &Session captured across await points, and far fewer accidental clones.\n\nThe practical takeaways:\n\n\u2022 Bucket allocations by real object lifetime: stable table for sessions/assets, bump arena for frame-local data, fixed-cap interner for repeated chat strings.\n\n\u2022 Treat async boundaries as ownership boundaries: pass handles, Bytes, or compact IDs across actors instead of borrowed arena references.\n\n\u2022 Make memory pressure explicit: pool BytesMut slabs, enforce per-segment budgets, and prefer backpressure over unbounded temporary allocation.\n\nThis is where Rust arena allocation, zero-copy bytes::Bytes, slotmap handles, and backpressure become production tools instead of clever optimizations.\n\nThe result was stable RSS under 152 MB across a 12-hour broadcast, with predictable performance in the hot path.\n\n#RustLang #MemoryManagement #ArenaAllocation #SystemsProgramming #WebRTC #RTMP #PerformanceEngineering\n\nRead the full article here: https://yaseenyk.github.io/portfolio/blog/rust-arena-allocation-to-keep-streameros-under-152-mb-for-12h/"
+  },
+  "https://yaseenyk.github.io/portfolio/blog/zero-copy-twitch-irc-parsing-in-rust-with-bytes-nom-at-5ks/": {
+    "status": "published",
+    "type": "poll",
+    "timestamp": "2026-06-30T12:04:05.868378+00:00",
+    "title": "Zero-copy Twitch IRC parsing in Rust with Bytes + nom at 5k/s",
+    "image_url": "",
+    "linkedin_post_id": "urn:li:ugcPost:7477693442601639936",
+    "commentary": "The fastest parser I\u2019ve shipped was the one that refused to allocate.\n\nFor high-throughput Twitch IRC parsing in Rust, I\u2019d rather frame with BytesMut, freeze into Bytes, and let nom borrow slices than create a String per line.\n\nThe trade-off is real: zero-copy parsing buys throughput, but it also forces discipline around lifetimes, ownership, and what you store across tasks.\n\n#RustLang #ZeroCopy #Tokio #NomParser #BytesMut #SystemsProgramming\nRead the full article here: https://yaseenyk.github.io/portfolio/blog/zero-copy-twitch-irc-parsing-in-rust-with-bytes-nom-at-5ks/",
+    "question": "For high-throughput IRC parsing in Rust, what would you ship?",
+    "options": [
+      "Zero-copy Bytes + nom",
+      "LinesCodec + Strings",
+      "Copy hot fields only",
+      "Parser generator"
+    ]
   }
 }
