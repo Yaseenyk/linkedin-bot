@@ -273,5 +273,21 @@
       "Copy hot fields only",
       "Parser generator"
     ]
+  },
+  "https://yaseenyk.github.io/portfolio/blog/tauri-rust-backpressure-bounded-vs-unbounded-channels-for-chat-floods/": {
+    "status": "published",
+    "type": "poll",
+    "timestamp": "2026-07-01T12:26:51.755624+00:00",
+    "title": "Tauri Rust Backpressure: Bounded vs Unbounded Channels for Chat Floods",
+    "image_url": "",
+    "linkedin_post_id": "urn:li:ugcPost:7478061559475421185",
+    "commentary": "Unbounded channels are how desktop apps quietly OOM under \u201cnormal\u201d chat traffic.\n\nI\u2019ve shipped Tauri + Rust event pipelines where the WebView was the bottleneck, not the backend. Once React reconciliation, GC, or DevTools stalls the UI, `window.emit` per token can turn into an unbounded memory leak unless you design real backpressure.\n\nFor chat floods and LLM token streams, the hard part isn\u2019t sending events \u2014 it\u2019s deciding what should happen when the UI can\u2019t keep up.\n\n#Tauri #RustLang #Backpressure #WebView #AsyncRust #LLMStreaming #DesktopApps\nRead the full article here: https://yaseenyk.github.io/portfolio/blog/tauri-rust-backpressure-bounded-vs-unbounded-channels-for-chat-floods/",
+    "question": "When a Tauri WebView can\u2019t keep up with chat events, what should the Rust core do?",
+    "options": [
+      "Block producers",
+      "Drop old events",
+      "Coalesce latest state",
+      "Persist everything"
+    ]
   }
 }
