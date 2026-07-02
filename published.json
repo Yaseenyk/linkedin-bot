@@ -289,5 +289,14 @@
       "Coalesce latest state",
       "Persist everything"
     ]
+  },
+  "https://yaseenyk.github.io/portfolio/blog/serdejson-to-simd-json-in-streameros-ipc-hot-path-deserialization/": {
+    "status": "published",
+    "type": "post",
+    "timestamp": "2026-07-02T12:01:10.807235+00:00",
+    "title": "serde_json to simd-json in streamerOS IPC: hot-path deserialization",
+    "image_url": "",
+    "linkedin_post_id": "urn:li:share:7478417482362281985",
+    "post": "serde_json wasn\u2019t \u201cslow\u201d \u2014 it was just too expensive for our IPC hot path.\n\nIn streamerOS, we push a lot of JSON over Unix domain sockets, and deserialize time showed up clearly in CPU profiles.\n\nserde_json is reliable and boring in the best way, but for our workload its scalar parsing and String allocation behavior were costing us more than I wanted to pay.\n\nThe migration to simd-json was not just a dependency swap.\n\nThe real win came from changing the shape of the hot path: mutable input buffers, borrowed string fields, and in-place parsing from bytes::BytesMut before handing frames through our Tokio UnixStream IPC layer.\n\nThe biggest gotcha: simd-json needs &mut [u8] because it rewrites the buffer during parsing for zero-copy deserialization.\n\nThat constraint is fine if you own the IPC framing layer, but it is painful if your buffers are immutable, shared, or reused in ways your parser can\u2019t mutate.\n\n3 takeaways I\u2019d apply again:\n\n\u2022 Benchmark the deserialize hot path with representative IPC frames, not synthetic tiny JSON blobs. JSON shape, string density, CPU architecture, and memory pressure all change the result.\n\n\u2022 Make string-heavy fields borrowable where possible. simd-json can return &str into the input buffer, while serde_json will often allocate owned String values.\n\n\u2022 Compile and deploy with SIMD in mind. AVX2 on x86_64 and NEON on aarch64 can matter, and generic target CPU builds may leave performance on the table.\n\nIf JSON parsing is a measurable line item in your Rust IPC budget, simd-json is worth testing.\n\nJust don\u2019t treat it as a free lunch \u2014 the performance comes from accepting stricter buffer ownership and lifetime constraints.\n\n#RustLang #SerdeJson #SimdJson #ZeroCopy #TokioRs #UnixDomainSockets #PerformanceEngineering\nRead the full article here: https://yaseenyk.github.io/portfolio/blog/serdejson-to-simd-json-in-streameros-ipc-hot-path-deserialization/"
   }
 }
