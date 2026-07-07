@@ -332,5 +332,21 @@
       "Atomic latest value",
       "Channel + backpressure"
     ]
+  },
+  "https://yaseenkhatib.streamerosai.com/blog/shrink-streameros-rust-binaries-optz-fat-lto-panicabort/": {
+    "status": "published",
+    "type": "poll",
+    "timestamp": "2026-07-07T16:09:31.228104+00:00",
+    "title": "Shrink streamerOS Rust binaries: opt=z, fat LTO, panic=abort",
+    "image_url": "",
+    "linkedin_post_id": "urn:li:ugcPost:7480291919466688512",
+    "commentary": "Small Rust binaries are not just a vanity metric.\n\nI\u2019ve shipped Rust agents in containers where a few MB affected cold starts, cache pressure, and rollout speed \u2014 but the \u201cright\u201d shrink knob is always a trade-off.\n\nopt-level=z, fat LTO, panic=abort, lld, and strip can all help, but I still measure each one in CI because the wins don\u2019t stack cleanly.\n\n#RustLang #RustPerformance #BinarySize #Containers #LTO #EmbeddedSystems #DevOps\n\nRead the full article here: https://yaseenkhatib.streamerosai.com/blog/shrink-streameros-rust-binaries-optz-fat-lto-panicabort/",
+    "question": "For production Rust containers, which binary-size trade-off would you reach for first?",
+    "options": [
+      "opt-level=z",
+      "fat LTO",
+      "panic=abort",
+      "strip in CI"
+    ]
   }
 }
