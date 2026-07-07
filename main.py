@@ -214,23 +214,73 @@ Article content:
 
 IMAGE_MODEL = "gpt-image-1"
 
+IMAGE_STYLE_RULES = (
+    "Style: bold, clickable tech-thumbnail cover (YouTube-thumbnail energy, "
+    "LinkedIn-professional polish). One dominant focal subject, dramatic "
+    "lighting, rich saturated colors, high contrast, instantly readable as a "
+    "small feed preview. The headline text must appear exactly once, spelled "
+    "exactly as quoted in the prompt, in massive bold clean sans-serif type "
+    "with strong contrast against the background. No other text, no "
+    "watermarks, no logos anywhere in the image."
+)
 
-def generate_post_image(title):
+
+def _image_brief(title, content):
+    """Have the text model art-direct a bespoke image prompt for the article."""
+    prompt = (
+        "You are an art director for a software engineering blog. Based on the "
+        "article below, write ONE vivid image-generation prompt (max 100 words) "
+        "for a scroll-stopping, clickable LinkedIn cover thumbnail.\n"
+        "- Distill the article into a punchy 3-6 word HEADLINE (plain ASCII, "
+        "may include one number if it is the article's key result). Put the "
+        "headline in double quotes in your prompt and state that it must be "
+        "rendered exactly once, spelled exactly as given, in huge bold "
+        "sans-serif type dominating the layout.\n"
+        "- Build the rest of the scene around ONE concrete, creative visual "
+        "metaphor for the article's core technical idea. Be specific to THIS "
+        "article - never a generic laptop, circuit board or glowing cube.\n"
+        "- High contrast, 2-3 vivid accent colors that fit the topic's mood, "
+        "one clear focal subject, composition that stays readable as a small "
+        "thumbnail in a busy feed.\n"
+        "- Besides the quoted headline, no other text, labels or lettering "
+        "anywhere - describe every object purely by shape, color and material, "
+        "and keep the scene to a few strong elements rather than a busy "
+        "diagram.\n"
+        "Return only the prompt text, nothing else.\n\n"
+        f"Article title: {title}\n\n"
+        f"Article excerpt:\n{content[:2000]}"
+    )
+    client = _openai_client()
+    response = client.chat.completions.create(
+        model=OPENAI_MODEL, messages=[{"role": "user", "content": prompt}]
+    )
+    return (response.choices[0].message.content or "").strip()
+
+
+def generate_post_image(title, content=""):
     """Generate a cover image for the post. Returns PNG bytes, or None on failure.
 
-    Image problems must never block publishing, so all errors are swallowed
-    and the caller falls back to a text-only post.
+    A text-model "art director" pass turns the article into a topic-specific
+    creative brief first; the image model then renders that brief. Image
+    problems must never block publishing, so all errors are swallowed and the
+    caller falls back to a text-only post.
     """
-    prompt = (
-        "A clean, modern LinkedIn cover image for a software engineering blog post "
-        f'titled "{title}". Dark navy tech aesthetic with subtle circuit/terminal '
-        "motifs, an abstract visual metaphor for the topic, minimalist, professional, "
-        "no text, no words, no letters anywhere in the image."
-    )
     try:
+        try:
+            brief = _image_brief(title, content)
+            print(f"Image brief: {brief}")
+        except Exception as exc:
+            print(f"Image brief failed ({exc}); using a generic prompt.")
+            brief = (
+                "A striking abstract visual metaphor for a software engineering "
+                f'article titled "{title}".'
+            )
         client = _openai_client()
         result = client.images.generate(
-            model=IMAGE_MODEL, prompt=prompt, size="1536x1024", quality="medium"
+            model=IMAGE_MODEL,
+            prompt=f"{brief}\n\n{IMAGE_STYLE_RULES}",
+            size="1536x1024",
+            quality="medium",
         )
         return base64.b64decode(result.data[0].b64_json)
     except Exception as exc:
@@ -455,9 +505,9 @@ def process_next_url():
             + "\n".join(f"  - {opt}" for opt in content["options"])
         )
     else:
-        image_bytes = generate_post_image(article["title"]) or download_image(
-            article["image_url"]
-        )
+        image_bytes = generate_post_image(
+            article["title"], article["content"]
+        ) or download_image(article["image_url"])
         post_id = publish_to_linkedin(
             content["text"], image_bytes=image_bytes, image_title=article["title"]
         )
