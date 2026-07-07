@@ -79,11 +79,15 @@ def discover_post_urls(page_url):
     resp.raise_for_status()
     soup = BeautifulSoup(resp.text, "html.parser")
 
+    # Resolve links against the final URL after redirects, not the requested
+    # one — otherwise a site that moved domains yields URLs on the old host.
+    base_url = resp.url
+
     posts = []
     blog_index = None
     for a in soup.find_all("a", href=True):
-        absolute = urljoin(page_url, a["href"]).split("#")[0].split("?")[0]
-        if urlparse(absolute).netloc != urlparse(page_url).netloc:
+        absolute = urljoin(base_url, a["href"]).split("#")[0].split("?")[0]
+        if urlparse(absolute).netloc != urlparse(base_url).netloc:
             continue
         norm = urlparse(absolute).path.rstrip("/")
         if BLOG_SECTION in urlparse(absolute).path and not norm.endswith("/blog"):
@@ -92,7 +96,7 @@ def discover_post_urls(page_url):
         elif norm.endswith("/blog"):
             blog_index = absolute
 
-    if blog_index and blog_index.rstrip("/") != page_url.rstrip("/"):
+    if blog_index and blog_index.rstrip("/") != base_url.rstrip("/"):
         for post_url in discover_post_urls(blog_index):
             if post_url not in posts:
                 posts.append(post_url)
