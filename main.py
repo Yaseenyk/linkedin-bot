@@ -143,7 +143,11 @@ def generate_linkedin_content(title, content, url, want_poll=False):
     rather than left to the model, which otherwise over-produces polls for
     trade-off-heavy articles.
     """
-    cta = f"Read the full article here: {url}"
+    # UTM-tagged so LinkedIn traffic is distinguishable in site analytics.
+    cta = (
+        f"Read the full article here: "
+        f"{url}?utm_source=linkedin&utm_medium=social&utm_campaign=auto-pipeline"
+    )
 
     if want_poll:
         format_instruction = (
