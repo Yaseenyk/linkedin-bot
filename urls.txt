@@ -1,1 +1,13 @@
+# Founder's Log series — publish these first, one per day, in this order.
+https://yaseenkhatib.streamerosai.com/blog/shipped-5-products-solo-12-months/
+https://yaseenkhatib.streamerosai.com/blog/vision-over-syntax-architecture-first/
+https://yaseenkhatib.streamerosai.com/blog/one-architect-claude-mcp-full-squad/
+https://yaseenkhatib.streamerosai.com/blog/ai-finops-playbook-stop-burning-money/
+https://yaseenkhatib.streamerosai.com/blog/linkedin-pipeline-job-search-runs-itself/
+https://yaseenkhatib.streamerosai.com/blog/zero-dollar-content-engine/
+https://yaseenkhatib.streamerosai.com/blog/sable-ai-agent-never-touches-money/
+https://yaseenkhatib.streamerosai.com/blog/streameros-rust-over-electron/
+https://yaseenkhatib.streamerosai.com/blog/the-94-percent-decision-integratex/
+https://yaseenkhatib.streamerosai.com/blog/hire-my-head-not-my-hands/
+# Then fall back to discovering the rest of the site.
 https://yaseenkhatib.streamerosai.com/

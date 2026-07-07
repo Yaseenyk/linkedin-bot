@@ -42,10 +42,19 @@ def save_published(published):
 
 
 def read_urls():
+    """Read urls.txt: one entry per line, top-down priority, # comments allowed.
+
+    An entry may be either a listing page to scan for posts (e.g. the site
+    root) or a direct blog-post URL, which is queued exactly as written.
+    """
     if not URLS_FILE.exists():
         return []
     with URLS_FILE.open("r", encoding="utf-8") as f:
-        return [line.strip() for line in f if line.strip()]
+        return [
+            line.strip()
+            for line in f
+            if line.strip() and not line.strip().startswith("#")
+        ]
 
 
 def scrape(url):
@@ -495,8 +504,19 @@ def publish_poll_to_linkedin(commentary, question, options):
     return resp.headers.get("x-restli-id") or (resp.json().get("id") if resp.text else None)
 
 
+def _is_post_url(url):
+    path = urlparse(url).path
+    return BLOG_SECTION in path and not path.rstrip("/").endswith("/blog")
+
+
 def next_unpublished_post(roots, published):
     for root in roots:
+        # A direct post URL queues that exact post, in urls.txt order;
+        # anything else is a listing page to be scanned for posts.
+        if _is_post_url(root):
+            if root not in published:
+                return root
+            continue
         for post_url in discover_post_urls(root):
             if post_url not in published:
                 return post_url
