@@ -364,5 +364,15 @@
       "Hybrid Tokio + Rayon",
       "External worker queue"
     ]
+  },
+  "https://yaseenkhatib.streamerosai.com/blog/pinning-a-18-idle-cpu-evented-vs-polling-in-tauri-tray-apps/": {
+    "status": "published",
+    "type": "post",
+    "timestamp": "2026-07-07T16:36:03.057887+00:00",
+    "title": "Pinning a 1.8% Idle CPU: Evented vs Polling in Tauri Tray Apps",
+    "image_url": "",
+    "linkedin_post_id": "urn:li:share:7480298594726699008",
+    "post": "Your tray app probably burns more battery at idle than it does doing real work.\n\nI\u2019ve shipped long-running Tauri tray apps, and the biggest idle CPU win wasn\u2019t a micro-optimization.\n\nIt was deleting polling loops.\n\nA 5-second timer sounds harmless until it keeps waking the CPU, blocks deeper sleep states, and turns a \u201cbackground utility\u201d into a battery tax.\n\nIn one production-style Tauri setup, moving from timer-based polling to OS events, async I/O, and back-pressure kept idle CPU around the 1\u20132% budget, often under 1%.\n\nThe pattern is simple: let the backend react to real changes, then emit Tauri events to the UI only when something actually happened.\n\nThree takeaways I\u2019d apply to any Rust + Tauri desktop app:\n\n\u2022 Replace polling with event sources wherever possible: file watchers via notify, WebSocket pushes, OS state changes, and backend-to-frontend Tauri events.\n\n\u2022 Add back-pressure before events hit the UI: debounce bursty file writes, coalesce latest values by key, and drop stale state instead of queueing infinite updates.\n\n\u2022 Measure idle behavior in release builds: track CPU %, wakeups/sec, and timer activity with tools like Activity Monitor, powermetrics, Instruments, Windows Task Manager, or ETW.\n\nIf polling is truly unavoidable, don\u2019t run a tight interval forever.\n\nUse adaptive backoff, coalesce timers, and stretch idle polling to minute-scale when nothing is changing.\n\nQuiet desktop apps are designed that way.\n\n#Tauri #RustLang #AsyncRust #DesktopApps #EventDrivenArchitecture #PerformanceEngineering #BatteryLife\nRead the full article here: https://yaseenkhatib.streamerosai.com/blog/pinning-a-18-idle-cpu-evented-vs-polling-in-tauri-tray-apps/",
+    "has_image": true
   }
 }
