@@ -348,5 +348,21 @@
       "panic=abort",
       "strip in CI"
     ]
+  },
+  "https://yaseenkhatib.streamerosai.com/blog/rust-structured-concurrency-cap-media-decoders-w-tokio-joinset/": {
+    "status": "published",
+    "type": "poll",
+    "timestamp": "2026-07-07T16:29:07.465773+00:00",
+    "title": "Rust structured concurrency: cap media decoders w/ tokio JoinSet",
+    "image_url": "",
+    "linkedin_post_id": "urn:li:ugcPost:7480296853914161152",
+    "commentary": "Unbounded ffmpeg fan-out is how a clean pipeline turns into zombie-process archaeology.\n\nIn production, I\u2019ve had the best results treating Rust media decoding concurrency as a resource budget, not just a task count \u2014 especially once cancellation, timeouts, and subprocess cleanup enter the picture.\n\n#RustLang #Tokio #StructuredConcurrency #FFmpeg #MediaProcessing #AsyncRust\nRead the full article here: https://yaseenkhatib.streamerosai.com/blog/rust-structured-concurrency-cap-media-decoders-w-tokio-joinset/",
+    "question": "For media decode fan-out in Rust, what would you use to enforce bounded, clean concurrency?",
+    "options": [
+      "Tokio + JoinSet",
+      "Rayon bounded pool",
+      "Hybrid Tokio + Rayon",
+      "External worker queue"
+    ]
   }
 }
