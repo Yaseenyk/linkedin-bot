@@ -1,3 +1,4 @@
+import base64
 import json
 import os
 import sys
@@ -197,8 +198,62 @@ Article content:
     return {"type": "post", "text": post}
 
 
+IMAGE_MODEL = "gpt-image-1"
+
+
+def generate_post_image(title):
+    """Generate a cover image for the post. Returns PNG bytes, or None on failure.
+
+    Image problems must never block publishing, so all errors are swallowed
+    and the caller falls back to a text-only post.
+    """
+    prompt = (
+        "A clean, modern LinkedIn cover image for a software engineering blog post "
+        f'titled "{title}". Dark navy tech aesthetic with subtle circuit/terminal '
+        "motifs, an abstract visual metaphor for the topic, minimalist, professional, "
+        "no text, no words, no letters anywhere in the image."
+    )
+    try:
+        client = _openai_client()
+        result = client.images.generate(
+            model=IMAGE_MODEL, prompt=prompt, size="1536x1024", quality="medium"
+        )
+        return base64.b64decode(result.data[0].b64_json)
+    except Exception as exc:
+        print(f"Image generation failed ({exc}); trying the article's own cover image.")
+        return None
+
+
+def download_image(url):
+    """Download an image (e.g. the article's og:image). Returns bytes or None."""
+    if not url:
+        return None
+    try:
+        resp = requests.get(url, headers=REQUEST_HEADERS, timeout=30)
+        resp.raise_for_status()
+        return resp.content
+    except Exception as exc:
+        print(f"Could not download article image ({exc}); posting text-only.")
+        return None
+
+
 LINKEDIN_API_BASE = "https://api.linkedin.com"
 LINKEDIN_API_VERSION = os.environ.get("LINKEDIN_API_VERSION", "202605")
+
+
+LITTLE_TEXT_RESERVED = "\\|{}@[]()<>*_~"
+
+
+def _escape_little_text(text):
+    """Escape characters reserved by LinkedIn's "little text format".
+
+    The /rest/posts endpoint (used for image posts and polls) parses commentary
+    as little text; unescaped reserved characters cause 400 errors or mangled
+    text. '#' is deliberately NOT escaped so hashtags stay clickable.
+    """
+    for ch in LITTLE_TEXT_RESERVED:
+        text = text.replace(ch, "\\" + ch)
+    return text
 
 
 def _linkedin_token():
@@ -218,9 +273,78 @@ def _linkedin_author_urn(token):
     return f"urn:li:person:{resp.json()['sub']}"
 
 
-def publish_to_linkedin(text):
+def _upload_image_to_linkedin(token, author, image_bytes):
+    """Upload image bytes via the LinkedIn Images API and return the image URN."""
+    init = requests.post(
+        f"{LINKEDIN_API_BASE}/rest/images?action=initializeUpload",
+        headers={
+            "Authorization": f"Bearer {token}",
+            "Content-Type": "application/json",
+            "X-Restli-Protocol-Version": "2.0.0",
+            "LinkedIn-Version": LINKEDIN_API_VERSION,
+        },
+        json={"initializeUploadRequest": {"owner": author}},
+        timeout=30,
+    )
+    init.raise_for_status()
+    value = init.json()["value"]
+
+    put = requests.put(
+        value["uploadUrl"],
+        headers={
+            "Authorization": f"Bearer {token}",
+            "Content-Type": "application/octet-stream",
+        },
+        data=image_bytes,
+        timeout=60,
+    )
+    put.raise_for_status()
+    return value["image"]
+
+
+def publish_to_linkedin(text, image_bytes=None, image_title=""):
     token = _linkedin_token()
     author = _linkedin_author_urn(token)
+
+    image_urn = None
+    if image_bytes:
+        try:
+            image_urn = _upload_image_to_linkedin(token, author, image_bytes)
+        except Exception as exc:
+            print(f"Image upload failed ({exc}); publishing text-only instead.")
+
+    if image_urn:
+        payload = {
+            "author": author,
+            "commentary": _escape_little_text(text),
+            "visibility": "PUBLIC",
+            "distribution": {
+                "feedDistribution": "MAIN_FEED",
+                "targetEntities": [],
+                "thirdPartyDistributionChannels": [],
+            },
+            "lifecycleState": "PUBLISHED",
+            "isReshareDisabledByAuthor": False,
+            "content": {
+                "media": {"id": image_urn, "altText": image_title[:300]}
+            },
+        }
+        resp = requests.post(
+            f"{LINKEDIN_API_BASE}/rest/posts",
+            headers={
+                "Authorization": f"Bearer {token}",
+                "Content-Type": "application/json",
+                "X-Restli-Protocol-Version": "2.0.0",
+                "LinkedIn-Version": LINKEDIN_API_VERSION,
+            },
+            json=payload,
+            timeout=30,
+        )
+        resp.raise_for_status()
+        return resp.headers.get("x-restli-id") or (
+            resp.json().get("id") if resp.text else None
+        )
+
     payload = {
         "author": author,
         "lifecycleState": "PUBLISHED",
@@ -254,7 +378,7 @@ def publish_poll_to_linkedin(commentary, question, options):
     author = _linkedin_author_urn(token)
     payload = {
         "author": author,
-        "commentary": commentary,
+        "commentary": _escape_little_text(commentary),
         "visibility": "PUBLIC",
         "distribution": {
             "feedDistribution": "MAIN_FEED",
@@ -314,7 +438,12 @@ def process_next_url():
             + "\n".join(f"  - {opt}" for opt in content["options"])
         )
     else:
-        post_id = publish_to_linkedin(content["text"])
+        image_bytes = generate_post_image(article["title"]) or download_image(
+            article["image_url"]
+        )
+        post_id = publish_to_linkedin(
+            content["text"], image_bytes=image_bytes, image_title=article["title"]
+        )
         preview = content["text"]
 
     print(f"Successfully published to LinkedIn (post id: {post_id})")
@@ -333,6 +462,7 @@ def process_next_url():
         record["options"] = content["options"]
     else:
         record["post"] = content["text"]
+        record["has_image"] = bool(image_bytes)
     published[url] = record
     save_published(published)
 
