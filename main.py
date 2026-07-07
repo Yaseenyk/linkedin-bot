@@ -120,22 +120,36 @@ def _strip_json_fence(text):
     return text.strip()
 
 
-def generate_linkedin_content(title, content, url):
+POLL_EVERY_N_POSTS = 4
+
+
+def generate_linkedin_content(title, content, url, want_poll=False):
     """Generate either a standard LinkedIn post or a poll for the article.
 
     Returns a dict shaped as either:
       {"type": "post", "text": "..."}
       {"type": "poll", "commentary": "...", "question": "...", "options": [...]}
-    The model decides which format fits; polls are produced only occasionally
-    when the article naturally raises a sharp technical trade-off worth a vote.
+    The caller decides the format (want_poll); the cadence is enforced in code
+    rather than left to the model, which otherwise over-produces polls for
+    trade-off-heavy articles.
     """
     cta = f"Read the full article here: {url}"
 
+    if want_poll:
+        format_instruction = (
+            "Produce a POLL using FORMAT B below, built around the sharpest "
+            "technical trade-off in the article."
+        )
+    else:
+        format_instruction = (
+            "Write a STANDARD POST using FORMAT A below. Do NOT produce a poll."
+        )
+
     prompt = f"""You are an experienced software developer sharing practical, battle-tested engineering insights with your peers on LinkedIn. Write in the first person, with the credibility of someone who has actually shipped this in production — not a marketer.
 
-Based on the article below, decide which of TWO formats best fits, then return ONLY a single JSON object (no markdown fences, no commentary around it).
+Based on the article below, return ONLY a single JSON object (no markdown fences, no commentary around it).
 
-Most of the time, write a standard post. OCCASIONALLY — only when the article raises a genuine, debatable technical trade-off that engineers would have real opinions on — produce a poll instead to drive engagement. Roughly one in four articles should become a poll; otherwise prefer a post.
+{format_instruction}
 
 == FORMAT A: standard post ==
 Return: {{"type": "post", "text": "<the full post>"}}
@@ -427,7 +441,10 @@ def process_next_url():
         return None
 
     article = scrape(url)
-    content = generate_linkedin_content(article["title"], article["content"], url)
+    want_poll = (len(published) + 1) % POLL_EVERY_N_POSTS == 0
+    content = generate_linkedin_content(
+        article["title"], article["content"], url, want_poll=want_poll
+    )
 
     if content["type"] == "poll":
         post_id = publish_poll_to_linkedin(
