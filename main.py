@@ -1,4 +1,5 @@
 import base64
+import io
 import json
 import os
 import sys
@@ -257,6 +258,26 @@ def _image_brief(title, content):
     return (response.choices[0].message.content or "").strip()
 
 
+def _strip_image_metadata(image_bytes):
+    """Re-encode the image, dropping all embedded metadata.
+
+    gpt-image-1 embeds C2PA content credentials, which LinkedIn surfaces as a
+    "Content Credentials" badge on the post. Re-encoding through Pillow drops
+    every metadata chunk, and JPEG output shrinks the ~2 MB PNGs as a bonus.
+    Returns the original bytes untouched if re-encoding fails.
+    """
+    try:
+        from PIL import Image
+
+        img = Image.open(io.BytesIO(image_bytes)).convert("RGB")
+        buf = io.BytesIO()
+        img.save(buf, format="JPEG", quality=90)
+        return buf.getvalue()
+    except Exception as exc:
+        print(f"Metadata strip failed ({exc}); using the original image bytes.")
+        return image_bytes
+
+
 def generate_post_image(title, content=""):
     """Generate a cover image for the post. Returns PNG bytes, or None on failure.
 
@@ -282,7 +303,7 @@ def generate_post_image(title, content=""):
             size="1536x1024",
             quality="medium",
         )
-        return base64.b64decode(result.data[0].b64_json)
+        return _strip_image_metadata(base64.b64decode(result.data[0].b64_json))
     except Exception as exc:
         print(f"Image generation failed ({exc}); trying the article's own cover image.")
         return None
