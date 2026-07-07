@@ -374,5 +374,21 @@
     "linkedin_post_id": "urn:li:share:7480298594726699008",
     "post": "Your tray app probably burns more battery at idle than it does doing real work.\n\nI\u2019ve shipped long-running Tauri tray apps, and the biggest idle CPU win wasn\u2019t a micro-optimization.\n\nIt was deleting polling loops.\n\nA 5-second timer sounds harmless until it keeps waking the CPU, blocks deeper sleep states, and turns a \u201cbackground utility\u201d into a battery tax.\n\nIn one production-style Tauri setup, moving from timer-based polling to OS events, async I/O, and back-pressure kept idle CPU around the 1\u20132% budget, often under 1%.\n\nThe pattern is simple: let the backend react to real changes, then emit Tauri events to the UI only when something actually happened.\n\nThree takeaways I\u2019d apply to any Rust + Tauri desktop app:\n\n\u2022 Replace polling with event sources wherever possible: file watchers via notify, WebSocket pushes, OS state changes, and backend-to-frontend Tauri events.\n\n\u2022 Add back-pressure before events hit the UI: debounce bursty file writes, coalesce latest values by key, and drop stale state instead of queueing infinite updates.\n\n\u2022 Measure idle behavior in release builds: track CPU %, wakeups/sec, and timer activity with tools like Activity Monitor, powermetrics, Instruments, Windows Task Manager, or ETW.\n\nIf polling is truly unavoidable, don\u2019t run a tight interval forever.\n\nUse adaptive backoff, coalesce timers, and stretch idle polling to minute-scale when nothing is changing.\n\nQuiet desktop apps are designed that way.\n\n#Tauri #RustLang #AsyncRust #DesktopApps #EventDrivenArchitecture #PerformanceEngineering #BatteryLife\nRead the full article here: https://yaseenkhatib.streamerosai.com/blog/pinning-a-18-idle-cpu-evented-vs-polling-in-tauri-tray-apps/",
     "has_image": true
+  },
+  "https://yaseenkhatib.streamerosai.com/blog/a-reproducible-ram-regression-workflow-in-rust-with-dhat-heaptrack/": {
+    "status": "published",
+    "type": "poll",
+    "timestamp": "2026-07-07T16:49:47.351867+00:00",
+    "title": "A reproducible RAM-regression workflow in Rust with dhat + heaptrack",
+    "image_url": "",
+    "linkedin_post_id": "urn:li:ugcPost:7480302054285111299",
+    "commentary": "The hardest memory bugs I\u2019ve shipped weren\u2019t leaks \u2014 they were \u201charmless\u201d clones that moved peak RSS by 300MB.\n\nIn Rust media pipelines, I\u2019ve had better results treating heap growth like a testable regression: deterministic workload, PR budget, then heaptrack when the gate trips.\n\n#RustLang #MemoryProfiling #PerformanceEngineering #CI #Heaptrack #MediaPipeline\nRead the full article here: https://yaseenkhatib.streamerosai.com/blog/a-reproducible-ram-regression-workflow-in-rust-with-dhat-heaptrack/",
+    "question": "What belongs in CI for catching Rust RAM regressions?",
+    "options": [
+      "dhat budget gate",
+      "heaptrack every PR",
+      "RSS threshold test",
+      "Profile locally only"
+    ]
   }
 }
