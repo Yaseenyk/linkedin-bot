@@ -390,5 +390,15 @@
       "RSS threshold test",
       "Profile locally only"
     ]
+  },
+  "https://yaseenkhatib.streamerosai.com/blog/claude-code-context-hygiene-clear-compact/": {
+    "status": "published",
+    "type": "post",
+    "timestamp": "2026-07-07T16:51:38.187102+00:00",
+    "title": "Context Hygiene: Mastering /clear and /compact in Claude Code",
+    "image_url": "",
+    "linkedin_post_id": "urn:li:share:7480302519089549313",
+    "post": "Your AI coding bill is probably leaking through old context, not bad prompts.\n\nI used to keep long Claude Code sessions open because it felt productive. In practice, I was paying the model to reread yesterday\u2019s stack trace while I was styling today\u2019s React component.\n\nClaude Code, like most LLM coding tools, is stateless under the hood. The client resends the conversation history on every turn, so a bloated context window becomes recurring input token cost.\n\nThe fix is boring, cheap, and very production-friendly: context hygiene.\n\nHere are the 3 habits I\u2019d actually enforce on a real engineering team:\n\n\u2022 Use /clear at task boundaries. If the auth middleware debug session does not help the database migration or UI component work, wipe the chat transcript and start clean.\n\n\u2022 Use /compact when continuity still matters. Give it focus instructions so the summary preserves decisions, file paths, failing tests, API contracts, and anything else the next step depends on.\n\n\u2022 Compact proactively before Claude Code auto-compacts. Auto-compact fires when the context window is already huge, which means the summarization pass itself is expensive.\n\nThe subtle one: prompt caching.\n\nIf you rely on cached prefixes, don\u2019t compact in the middle of a tight loop. Compact at natural breakpoints where you were going to invalidate the cache anyway, like a new sub-task or a new file set.\n\nThis is the kind of LLM optimization I like because it doesn\u2019t require a model downgrade, prompt gymnastics, or quality trade-off. It just stops resending tokens that no longer help the current task.\n\nMy rule now is simple: one task, one context. If I can\u2019t explain why the previous conversation helps the next request, I clear it.\n\n#ClaudeCode #AIEngineering #LLMOptimization #PromptEngineering #TokenOptimization #DeveloperProductivity #PromptCaching\nRead the full article here: https://yaseenkhatib.streamerosai.com/blog/claude-code-context-hygiene-clear-compact/",
+    "has_image": true
   }
 }
