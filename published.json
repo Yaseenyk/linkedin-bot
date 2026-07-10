@@ -420,5 +420,21 @@
     "linkedin_post_id": "urn:li:share:7481009486355185665",
     "post": "Generated code made implementation cheap; bad architecture is now the expensive part.\n\nI don\u2019t start serious products with npm create anymore.\n\nI start by forcing myself to see the whole system first: data flow, trust boundaries, failure modes, write paths, privacy constraints, and the cost curve after launch.\n\nThat sounds slow until you\u2019ve shipped enough software to know the truth: unclear architecture just turns AI code generation into a faster way to build the wrong product.\n\nWhen I built an LLM finance agent, the most important decision was not the framework.\n\nIt was that financial data lived in on-device SQLite, the model could propose but never commit, and every database mutation went through a human-in-the-loop Review & Confirm gate.\n\nThose refusals removed entire classes of production risk.\n\nNo server-side finance data. No autonomous writes from the LLM. No mystery sync conflicts because queued writes serialized the path to state.\n\nThe same pattern applies to product architecture everywhere.\n\nThe strongest systems I\u2019ve shipped were shaped as much by what they refused to do as by what they supported.\n\nHere are the 3 architecture-first habits I keep coming back to:\n\n\u2022 Define data ownership before choosing the stack. If you cannot answer where the data lives, who can mutate it, and how it leaves the system, you are not ready to code.\n\n\u2022 Put trust boundaries around AI agents explicitly. Treat LLM output as a proposal, not authority, especially around payments, databases, user identity, and destructive actions.\n\n\u2022 Design the failure mode before the happy path. Queues, idempotency, audit logs, rollback paths, and cost ceilings are not \u201clater\u201d work in production systems.\n\nReact, Next.js, Node.js, TypeScript, Python, and Claude can all help you move faster.\n\nBut they will not decide the product\u2019s operating model for you.\n\nThat\u2019s still engineering.\n\n#SoftwareArchitecture #SystemDesign #LLMAgents #AIEngineering #DataPrivacy #SQLite #ProductionEngineering\nRead the full article here: https://yaseenkhatib.streamerosai.com/blog/vision-over-syntax-architecture-first/?utm_source=linkedin&utm_medium=social&utm_campaign=auto-pipeline",
     "has_image": true
+  },
+  "https://yaseenkhatib.streamerosai.com/blog/one-architect-claude-mcp-full-squad/": {
+    "status": "published",
+    "type": "poll",
+    "timestamp": "2026-07-10T12:18:23.697748+00:00",
+    "title": "One Architect + Claude + MCP = A Full Engineering Squad: The Operating Model I'd Install at Your Company",
+    "image_url": "https://yaseenkhatib.streamerosai.com/og/one-architect-claude-mcp-full-squad.jpg",
+    "linkedin_post_id": "urn:li:ugcPost:7481320919387402241",
+    "commentary": "The real AI engineering trade-off isn\u2019t speed. It\u2019s how much authority you\u2019re willing to give the model.\n\nI\u2019ve shipped with Claude Code + MCP against real repos, schemas, UI flows, and tests. The productivity jump is real \u2014 but only if the trust boundaries are explicit.\n\n#ClaudeCode #MCP #AIEngineering #SoftwareArchitecture #DeveloperProductivity #Postgres #Playwright\nRead the full article here: https://yaseenkhatib.streamerosai.com/blog/one-architect-claude-mcp-full-squad/?utm_source=linkedin&utm_medium=social&utm_campaign=auto-pipeline",
+    "question": "How much MCP access should an AI coding agent get in a real engineering workflow?",
+    "options": [
+      "Read-only context",
+      "Scoped write access",
+      "Full dev autonomy",
+      "No repo access"
+    ]
   }
 }
