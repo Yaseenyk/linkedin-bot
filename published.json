@@ -436,5 +436,15 @@
       "Full dev autonomy",
       "No repo access"
     ]
+  },
+  "https://yaseenkhatib.streamerosai.com/blog/ai-finops-playbook-stop-burning-money/": {
+    "status": "published",
+    "type": "post",
+    "timestamp": "2026-07-11T10:53:55.104061+00:00",
+    "title": "Your Company Is Overpaying for AI by 80% \u2014 I Built a Live Simulator That Proves It",
+    "image_url": "https://yaseenkhatib.streamerosai.com/og/ai-finops-playbook-stop-burning-money.jpg",
+    "linkedin_post_id": "urn:li:share:7481662047978545152",
+    "post": "Your LLM bill is probably not an AI problem \u2014 it\u2019s a routing bug.\n\nI\u2019ve seen teams send everything to the most expensive frontier model: greetings, FAQ lookups, simple rewrites, and actual reasoning tasks.\n\nThat works at 1,000 users. At 100,000 users, LLM spend turns into a headcount-sized line item.\n\nThe production pattern that fixes this is not magic prompt engineering. It\u2019s AI FinOps plus a three-tier LLM routing architecture: semantic cache, fast/cheap model, then frontier model only when needed.\n\nHere are the 3 moves I\u2019d make first:\n\n\u2022 Instrument every AI request by intent, token usage, latency, cache eligibility, model used, and final outcome before touching routing logic.\n\n\u2022 Put a semantic cache in front of your highest-volume flows first, especially repetitive support questions, FAQ-style lookups, and rephrased prompts.\n\n\u2022 Add a model router with confidence thresholds, fallback paths, and chaos testing for latency spikes, 504s, and degraded provider responses.\n\nThe important part: cost optimization and resiliency are the same system.\n\nA router that saves 80% but collapses during provider latency is not production-ready. A reliable AI system needs cost governance, escalation logic, observability, and failure handling built together.\n\nThis is how you stop paying frontier-model prices for cacheable work.\n\n#AIFinOps #LLMOps #LLMCostOptimization #SemanticCache #ModelRouting #AIInfrastructure #ProductionAI\nRead the full article here: https://yaseenkhatib.streamerosai.com/blog/ai-finops-playbook-stop-burning-money/?utm_source=linkedin&utm_medium=social&utm_campaign=auto-pipeline",
+    "has_image": true
   }
 }
