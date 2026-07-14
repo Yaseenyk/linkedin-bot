@@ -466,5 +466,21 @@
     "linkedin_post_id": "urn:li:share:7482409953891250176",
     "post": "Your next CMS might just be a text file and a cron job.\n\nI shipped a $0 AI content pipeline that writes, commits, and deploys technical blog posts twice a week without a CMS, database, server, or deploy dashboard.\n\nThe whole thing runs from the repo: a cron-triggered GitHub Actions workflow reads the next topic from scripts/topics.txt, calls Gemini 2.5 Flash through the google-genai SDK, writes an MDX file, commits it, and lets the static site deploy from main.\n\nThe important production lesson was not \u201cuse AI for content.\u201d\n\nIt was this: keep the model away from the parts that can break your build.\n\nIn my setup, Python owns the slug, date, filename, and MDX frontmatter schema. Gemini only generates the article body, so a weird model response cannot corrupt the typed Next.js build.\n\nThree takeaways I\u2019d reuse on any automation-heavy system:\n\n- Use Git as the source of truth when the data is small, reviewable, and benefits from diffs, history, rollback, and manual edits.\n\n- Put deterministic code around non-deterministic AI output: validate frontmatter, generate slugs yourself, and fail the CI/CD pipeline loudly.\n\n- Before adding queues, databases, CMS tools, or serverless infrastructure, sketch the \u201cplain files + cron + GitHub Actions\u201d version first.\n\nThis pattern will not replace real infrastructure where you actually need concurrency, user state, moderation workflows, or transactional guarantees.\n\nBut for an SEO-ready technical blog, static site generation, MDX publishing, and scheduled AI writing, it is boring in exactly the right way.\n\nThe best architecture decision I made here was refusing infrastructure until the system proved it needed any.\n\n#GitHubActions #GenerativeAI #StaticSiteGeneration #NextJS #MDX #CICD #AIEngineering\nRead the full article here: https://yaseenkhatib.streamerosai.com/blog/zero-dollar-content-engine/?utm_source=linkedin&utm_medium=social&utm_campaign=auto-pipeline",
     "has_image": true
+  },
+  "https://yaseenkhatib.streamerosai.com/blog/sable-ai-agent-never-touches-money/": {
+    "status": "published",
+    "type": "poll",
+    "timestamp": "2026-07-14T11:16:26.028025+00:00",
+    "title": "I Built an AI Money Agent That's Structurally Incapable of Touching the Money",
+    "image_url": "https://yaseenkhatib.streamerosai.com/og/sable-ai-agent-never-touches-money.jpg",
+    "linkedin_post_id": "urn:li:ugcPost:7482754877815791616",
+    "commentary": "The safest AI agent I\u2019ve shipped is the one I deliberately made less autonomous.\n\nFor Sable, I let the LLM generate structured intents with OpenAI function calling, but every call is a dry run. SQLite is local, the ledger stays on-device, and the model can propose changes \u2014 never commit them.\n\n#AIAgents #LocalFirst #SQLite #ReactNative #LLM #DataPrivacy #HumanInTheLoop\nRead the full article here: https://yaseenkhatib.streamerosai.com/blog/sable-ai-agent-never-touches-money/?utm_source=linkedin&utm_medium=social&utm_campaign=auto-pipeline",
+    "question": "Where should the LLM boundary be in sensitive financial workflows?",
+    "options": [
+      "Propose only",
+      "Commit with approval",
+      "Commit under policy",
+      "Full autonomy"
+    ]
   }
 }
