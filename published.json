@@ -482,5 +482,15 @@
       "Commit under policy",
       "Full autonomy"
     ]
+  },
+  "https://yaseenkhatib.streamerosai.com/blog/streameros-rust-over-electron/": {
+    "status": "published",
+    "type": "post",
+    "timestamp": "2026-07-15T11:21:07.322768+00:00",
+    "title": "Everyone Said 'Just Use Electron.' I Wrote streamerOS in Rust \u2014 Here's What That Bought",
+    "image_url": "https://yaseenkhatib.streamerosai.com/og/streameros-rust-over-electron.jpg",
+    "linkedin_post_id": "urn:li:share:7483118442867437569",
+    "post": "Electron would have been faster to ship \u2014 and worse for the product.\n\nWhen I built streamerOS, the obvious advice was: use Electron, wrap a web app, ship the desktop app in a month.\n\nI chose Rust with Tauri instead.\n\nNot because Rust is fashionable, and not because I enjoy fighting the borrow checker.\n\nBecause a streamer\u2019s PC is already under siege: AAA game, OBS encoder, browser dashboards, chat apps, plugins, alerts, overlays, all competing for CPU, RAM, and frame time.\n\nDropping another few-hundred-megabyte Chromium runtime into that environment just to render system telemetry felt like taxing the user\u2019s FPS.\n\nRust was slower to build. The Tauri desktop architecture, async lifetimes, IPC design, chat ingestion, and OBS automation layer all took more upfront engineering than an ElectronJS version would have.\n\nBut development time is paid once by me. Runtime overhead is paid every stream by every user.\n\nThat changed the decision from \u201cwhich stack is easiest?\u201d to \u201cwhere does the product constraint actually live?\u201d\n\nThree takeaways I\u2019d apply again:\n\n\u2022 Measure runtime cost in the user\u2019s real environment, not your dev machine. If your app runs beside OBS, games, browser dashboards, and chat, profile CPU, memory, startup time, and frame-time impact before choosing Electron.\n\n\u2022 Keep the hot path out of the UI layer. For streamerOS, system telemetry, multi-platform chat velocity, OBS scene control, and rule evaluation belonged in a lean Rust core with explicit IPC boundaries.\n\n\u2022 Spend engineering effort where the constraint lives. The borrow checker hurts during development; a bundled Chromium tax hurts every user, every session, forever.\n\nThe stack is not the product, but the tradeoff absolutely is.\n\n#RustLang #Tauri #ElectronJS #DesktopApps #OBSAutomation #SystemTelemetry #SoftwareArchitecture\nRead the full article here: https://yaseenkhatib.streamerosai.com/blog/streameros-rust-over-electron/?utm_source=linkedin&utm_medium=social&utm_campaign=auto-pipeline",
+    "has_image": true
   }
 }
