@@ -512,5 +512,21 @@
     "linkedin_post_id": "urn:li:share:7483841433712582657",
     "post": "AI made typing code cheaper; architecture is where the bill still shows up.\n\nMost engineering resumes read like inventories of hands: React, Node.js, Rust, AWS, years of experience.\n\nBut in production, the expensive failures usually come from bad system boundaries, weak trade-offs, and infrastructure nobody priced until the invoice arrived.\n\nThat is why I started treating my solo products as my real resume.\n\nI shipped a Rust desktop cockpit instead of defaulting to Electron because the user\u2019s machine was the constraint.\n\nI built an AI finance agent where the LLM is structurally unable to touch money, because trust boundaries should not depend on prompt discipline.\n\nI built a workflow engine that cut payloads by 94% by refusing to persist view state that could be derived.\n\nI also run autonomous content and networking pipelines on $0 infrastructure, plus a static-exported Next.js site with a grounded RAG concierge, FinOps simulator, and entity-graph SEO layer.\n\nThe lesson is not \u201clook what I built.\u201d\n\nThe lesson is that full-stack AI engineering is becoming less about knowing every framework and more about making the right architectural refusal early.\n\n3 takeaways I\u2019d apply again:\n\n- Put hard trust boundaries around AI systems: separate reasoning from execution, especially in finance, payments, permissions, and any irreversible workflow.\n\n- Optimize for the real bottleneck, not the fashionable stack: choose Rust, Next.js static export, serverless, queues, or boring cron based on latency, cost, and failure modes.\n\n- Persist less state: derive views where possible, reduce payload size, and make workflow engines cheaper by storing decisions instead of UI-shaped data.\n\nThis is the kind of work I want to be evaluated on: production systems, inspectable trade-offs, and architecture that survives contact with real users.\n\n#AIEngineering #FullStackDevelopment #SystemDesign #RAG #NextJS #RustLang #FinOps\nRead the full article here: https://yaseenkhatib.streamerosai.com/blog/hire-my-head-not-my-hands/?utm_source=linkedin&utm_medium=social&utm_campaign=auto-pipeline",
     "has_image": true
+  },
+  "https://yaseenkhatib.streamerosai.com/blog/zero-network-leakage-in-ci-deny-by-default-egress-harness/": {
+    "status": "published",
+    "type": "poll",
+    "timestamp": "2026-07-18T10:54:38.501036+00:00",
+    "title": "Zero Network Leakage in CI: Deny-by-Default Egress Harness",
+    "image_url": "https://yaseenkhatib.streamerosai.com/og/zero-network-leakage-in-ci-deny-by-default-egress-harness.jpg",
+    "linkedin_post_id": "urn:li:ugcPost:7484198945078968320",
+    "commentary": "\u201cNever phones home\u201d isn\u2019t a claim I trust unless CI can prove it.\n\nI\u2019ve had the best results with deny-by-default egress: run the app in an isolated network context, allow only loopback/stubs, log denied packets, and fail the build if counters move.\n\nThe real trade-off is determinism vs convenience.\n\n#CICD #NetworkSecurity #nftables #DevSecOps #ElectronJS #ComplianceAutomation\nRead the full article here: https://yaseenkhatib.streamerosai.com/blog/zero-network-leakage-in-ci-deny-by-default-egress-harness/?utm_source=linkedin&utm_medium=social&utm_campaign=auto-pipeline",
+    "question": "How strict should CI network egress be for apps claiming \u201cno phone home\u201d?",
+    "options": [
+      "Loopback only",
+      "Stub/proxy allowlist",
+      "Live DNS allowlist",
+      "App-layer mocks only"
+    ]
   }
 }
