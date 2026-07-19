@@ -528,5 +528,15 @@
       "Live DNS allowlist",
       "App-layer mocks only"
     ]
+  },
+  "https://yaseenkhatib.streamerosai.com/blog/unifying-twitch-and-youtube-live-chat-ordered-de-duplicated/": {
+    "status": "published",
+    "type": "post",
+    "timestamp": "2026-07-19T11:03:36.752947+00:00",
+    "title": "Unifying Twitch and YouTube Live Chat: Ordered, De-duplicated",
+    "image_url": "https://yaseenkhatib.streamerosai.com/og/unifying-twitch-and-youtube-live-chat-ordered-de-duplicated.jpg",
+    "linkedin_post_id": "urn:li:share:7484563589354143744",
+    "post": "The hardest part of live chat aggregation isn\u2019t the API integration \u2014 it\u2019s time.\n\nI\u2019ve shipped multi-platform live chat pipelines, and the trap is letting every client solve ordering, de-duplication, and replay differently.\n\nThat works until Twitch and YouTube messages arrive out of order, polling adds jitter, a reconnect replays old messages, and moderation sees a different timeline than the UI.\n\nThe fix I trust is a local event stream as the source of truth: ingest Twitch Live Chat and YouTube Live Chat separately, normalize them into one schema, then append one ordered, durable feed for every consumer.\n\nA few implementation details matter more than the architecture diagram:\n\n- Use a Hybrid Logical Clock and a min-heap keyed by event time, then drain only up to a watermark based on the minimum last-seen source timestamp minus allowed lateness.\n\n- Build global idempotency keys with platform-prefixed message IDs; when IDs are missing, use a rolling content hash from author, text, and coarse timestamp with a TTL-backed LRU or Bloom filter.\n\n- Pick one append-only local bus \u2014 Redis Streams, Kafka, or SQLite WAL \u2014 and store per-source checkpoints so restarts resume cleanly without duplicating messages.\n\nThis keeps backpressure, replay, ordering, and de-duplication in one place instead of leaking distributed systems problems into every UI, analytics job, and moderation tool.\n\nIf you\u2019re merging real-time event feeds, don\u2019t start with the frontend timeline.\n\nStart with the log.\n\n#DistributedSystems #EventDrivenArchitecture #RedisStreams #Kafka #LiveStreaming #YouTubeAPI #TwitchAPI\nRead the full article here: https://yaseenkhatib.streamerosai.com/blog/unifying-twitch-and-youtube-live-chat-ordered-de-duplicated/?utm_source=linkedin&utm_medium=social&utm_campaign=auto-pipeline",
+    "has_image": true
   }
 }
