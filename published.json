@@ -558,5 +558,21 @@
     "linkedin_post_id": "urn:li:share:7485298093563842560",
     "post": "SQLite is not the reason your desktop app feels flaky.\n\nMost local database pain I\u2019ve seen in Tauri apps came from how SQLite was wired: wrong file location, migrations missing from the bundle, pooled connections with inconsistent PRAGMAs, or writers fighting each other.\n\nFor a single-user Tauri desktop app, Rust + sqlx + SQLite is a very solid stack if you treat startup and persistence as production code, not scaffolding.\n\nThe setup I trust is app-local storage via Tauri path_resolver, embedded sqlx migrations, SQLite WAL mode, and a small connection pool tuned for desktop UX.\n\nThe goal is boring: predictable startup, offline packaging, snappy reads, and no database is locked code 5 tickets.\n\n- Store the SQLite file in the OS app data directory, not beside the executable. On Windows, macOS, and Linux this avoids permission issues, antivirus weirdness, and broken auto-updates.\n\n- Embed migrations with sqlx::migrate!(./migrations) and run them on startup. Commit the generated migration files so your packaged Tauri app works offline without shipping extra resource files.\n\n- Apply SQLite PRAGMAs per connection with PoolOptions::after_connect: WAL mode, synchronous=NORMAL, foreign_keys=ON, busy_timeout around 5s, journal_size_limit, and wal_autocheckpoint. Keep max_connections small because SQLite still serializes writers.\n\nOne thing I\u2019d emphasize: more connections will not save a local SQLite app.\n\nBatch writes in transactions, avoid long-lived UI-driven transactions, and measure on the slowest disk you support.\n\nIf you use sqlx query! macros, add the offline prepare step and build with SQLX_OFFLINE=true in CI so your release pipeline does not depend on a live DATABASE_URL.\n\nThis is the kind of boring infrastructure that users never notice, which is exactly the point.\n\n#Tauri #RustLang #SQLite #SQLx #DesktopApps #DatabaseMigrations #WAL\nRead the full article here: https://yaseenkhatib.streamerosai.com/blog/tauri-sqlx-sqlite-migrations-and-wal-for-local-apps/?utm_source=linkedin&utm_medium=social&utm_campaign=auto-pipeline",
     "has_image": true
+  },
+  "https://yaseenkhatib.streamerosai.com/blog/my-journey-web-developer-to-ai-engineer/": {
+    "status": "published",
+    "type": "poll",
+    "timestamp": "2026-07-22T11:41:04.934904+00:00",
+    "title": "How I Went From My First Dev Job to Building AI Systems",
+    "image_url": "https://yaseenkhatib.streamerosai.com/og/my-journey-web-developer-to-ai-engineer.jpg",
+    "linkedin_post_id": "urn:li:ugcPost:7485660183637999617",
+    "commentary": "I don\u2019t trust autonomous agents by default.\n\nAfter shipping LLM workflows inside MERN systems, the hardest trade-off hasn\u2019t been prompt engineering. It\u2019s deciding how much authority the model gets versus what stays behind APIs, data contracts, evals, and deterministic guardrails.\n\n#LLM #AIAgents #RAG #MERNStack #SystemDesign #ProductionAI\n\nRead the full article here: https://yaseenkhatib.streamerosai.com/blog/my-journey-web-developer-to-ai-engineer/?utm_source=linkedin&utm_medium=social&utm_campaign=auto-pipeline",
+    "question": "In production AI systems, how much authority should an LLM agent have?",
+    "options": [
+      "Suggest only",
+      "Act behind APIs",
+      "Autonomous with guardrails",
+      "Full autonomy after evals"
+    ]
   }
 }
