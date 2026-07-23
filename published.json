@@ -574,5 +574,15 @@
       "Autonomous with guardrails",
       "Full autonomy after evals"
     ]
+  },
+  "https://yaseenkhatib.streamerosai.com/blog/stop-mixing-render-and-domain-state-in-react-dashboards/": {
+    "status": "published",
+    "type": "post",
+    "timestamp": "2026-07-23T11:45:24.034533+00:00",
+    "title": "Stop mixing render and domain state in React dashboards",
+    "image_url": "https://yaseenkhatib.streamerosai.com/og/stop-mixing-render-and-domain-state-in-react-dashboards.jpg",
+    "linkedin_post_id": "urn:li:share:7486023655785697280",
+    "post": "React dashboards don\u2019t get slow because React is slow \u2014 they get slow because we make pixels and business data share the same state bucket.\n\nI\u2019ve shipped this mistake, debugged the re-render storms, and watched \u201csave dashboard\u201d payloads quietly grow from a few KB to hundreds of KB.\n\nThe fix that held up in production was simple: domain state and render state must live in different places.\n\nDomain state is server-owned data: normalized API responses, mutations, cache invalidation, query params, and persisted artifacts. I keep that in TanStack Query, RTK Query, or another server-state cache.\n\nRender state is UI-owned data: selected rows, open panels, hover state, active tabs, drag positions, column widths, and scroll offsets. I keep that in local React state or a tiny Zustand store.\n\nThe practical version looks like this:\n\n\u2022 Put server data in TanStack Query or RTK Query, keyed by real query params, and let cache invalidation handle freshness.\n\n\u2022 Put UI state in Zustand or local component state, then subscribe through selectors with shallow equality to avoid re-render storms.\n\n\u2022 Persist only stable layout/configuration through a serialization adapter, and strip transient UI noise like selection, hover, drag state, and partial token streams.\n\nOne rule I use during code review: will this value cross a process boundary \u2014 persist, sync, query, or reload?\n\nIf yes, it\u2019s domain state. If no, it\u2019s render state.\n\nThis matters even more in Next.js dashboards with React 18 streaming, server prefetching, and TanStack Query dehydration. Prefetch domain data on the server, but create UI state only on the client after mount.\n\nFor AI dashboards and streaming telemetry, partial tokens are render state. The final summary and metadata are domain state.\n\nThat boundary is boring, but it\u2019s the boring line that keeps payloads small, hydration clean, and production debugging sane.\n\n#ReactJS #TanStackQuery #RTKQuery #Zustand #NextJS #FrontendArchitecture #ReactPerformance\nRead the full article here: https://yaseenkhatib.streamerosai.com/blog/stop-mixing-render-and-domain-state-in-react-dashboards/?utm_source=linkedin&utm_medium=social&utm_campaign=auto-pipeline",
+    "has_image": true
   }
 }
