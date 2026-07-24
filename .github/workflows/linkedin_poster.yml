@@ -2,8 +2,13 @@ name: LinkedIn Poster
 
 on:
   schedule:
-    # 10:00 AM UTC every day
-    - cron: "0 10 * * *"
+    # Tue/Wed/Thu at 10:00 UTC — three posts a week, not seven.
+    #
+    # Daily posting with ~1 reaction per post trained LinkedIn's algorithm to
+    # treat the audience as uninterested, and reach compounded downward. Fewer,
+    # stronger posts on the highest-engagement weekdays (Tue-Thu; Mon and Fri
+    # are measurably weaker) give each one a real chance to earn distribution.
+    - cron: "0 10 * * 2,3,4"
   workflow_dispatch:
 
 env:
