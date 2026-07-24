@@ -5,7 +5,7 @@ import os
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
-from urllib.parse import urljoin, urlparse
+from urllib.parse import quote, urljoin, urlparse
 
 import requests
 from openai import OpenAI
@@ -143,11 +143,17 @@ def generate_linkedin_content(title, content, url, want_poll=False):
     rather than left to the model, which otherwise over-produces polls for
     trade-off-heavy articles.
     """
-    # UTM-tagged so LinkedIn traffic is distinguishable in site analytics.
-    cta = (
-        f"Read the full article here: "
+    # The article URL is deliberately kept OUT of the post body: LinkedIn
+    # demotes posts that push people off-platform, which was capping reach at
+    # roughly the size of the initial test batch. The link is posted as the
+    # FIRST COMMENT instead, automatically, immediately after publishing — so
+    # readers still get it and the post keeps its distribution.
+    # UTM-tagged so LinkedIn traffic stays distinguishable in site analytics.
+    article_link = (
         f"{url}?utm_source=linkedin&utm_medium=social&utm_campaign=auto-pipeline"
     )
+    comment_text = f"Full write-up here: {article_link}"
+    cta = "Full write-up in the first comment."
 
     if want_poll:
         format_instruction = (
@@ -213,6 +219,7 @@ Article content:
             "commentary": commentary,
             "question": (data.get("question") or "").strip()[:140],
             "options": options,
+            "comment_text": comment_text,
         }
 
     if isinstance(data, dict) and isinstance(data.get("text"), str):
@@ -223,7 +230,7 @@ Article content:
     if cta not in post:
         post = f"{post}\n\n{cta}"
 
-    return {"type": "post", "text": post}
+    return {"type": "post", "text": post, "comment_text": comment_text}
 
 
 IMAGE_MODEL = "gpt-image-1"
@@ -479,6 +486,35 @@ def publish_to_linkedin(text, image_bytes=None, image_title=""):
     return resp.headers.get("x-restli-id") or resp.json().get("id")
 
 
+def comment_on_post(post_urn, text):
+    """Add the article link as the first comment on a freshly published post.
+
+    Keeping the URL out of the post body and putting it here preserves reach
+    (LinkedIn demotes off-platform links in the body) while still giving
+    readers the article. Best-effort: a failure here must never undo a
+    successful publish, so the caller treats it as non-fatal.
+    """
+    if not post_urn or not text:
+        return None
+    token = _linkedin_token()
+    author = _linkedin_author_urn(token)
+    # The URN is a path segment, so ':' must be percent-encoded.
+    encoded_urn = quote(post_urn, safe="")
+    resp = requests.post(
+        f"{LINKEDIN_API_BASE}/rest/socialActions/{encoded_urn}/comments",
+        headers={
+            "Authorization": f"Bearer {token}",
+            "Content-Type": "application/json",
+            "X-Restli-Protocol-Version": "2.0.0",
+            "LinkedIn-Version": LINKEDIN_API_VERSION,
+        },
+        json={"actor": author, "object": post_urn, "message": {"text": text}},
+        timeout=30,
+    )
+    resp.raise_for_status()
+    return resp.headers.get("x-restli-id") or (resp.json().get("id") if resp.text else None)
+
+
 def publish_poll_to_linkedin(commentary, question, options):
     if not 2 <= len(options) <= 4:
         raise ValueError(f"A LinkedIn poll needs 2 to 4 options, got {len(options)}.")
@@ -571,6 +607,19 @@ def process_next_url():
 
     print(f"Successfully published to LinkedIn (post id: {post_id})")
 
+    # Drop the article link in as the first comment. Non-fatal: the post is
+    # already live, so a comment failure is logged and the run still succeeds.
+    comment_id = None
+    try:
+        comment_id = comment_on_post(post_id, content.get("comment_text", ""))
+        print(f"Posted the article link as the first comment (id: {comment_id})")
+    except Exception as exc:
+        print(
+            f"Could not post the link comment ({exc}). "
+            f"The post is live; add this link manually if you want it: "
+            f"{content.get('comment_text', '')}"
+        )
+
     record = {
         "status": "published",
         "type": content["type"],
@@ -578,6 +627,8 @@ def process_next_url():
         "title": article["title"],
         "image_url": article["image_url"],
         "linkedin_post_id": post_id,
+        "link_comment_id": comment_id,
+        "link_comment_posted": bool(comment_id),
     }
     if content["type"] == "poll":
         record["commentary"] = content["commentary"]
