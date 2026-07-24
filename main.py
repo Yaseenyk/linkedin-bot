@@ -165,7 +165,9 @@ def generate_linkedin_content(title, content, url, want_poll=False):
             "Write a STANDARD POST using FORMAT A below. Do NOT produce a poll."
         )
 
-    prompt = f"""You are an experienced software developer sharing practical, battle-tested engineering insights with your peers on LinkedIn. Write in the first person, with the credibility of someone who has actually shipped this in production — not a marketer.
+    prompt = f"""You are an experienced software developer telling a peer a war story from production — the way one engineer talks to another, not the way a brand talks to an audience. Write in the first person with the credibility of someone who actually shipped this. Never sound like a marketer.
+
+You are a storyteller first: tension, turn, resolution. A post that only lists facts has failed.
 
 Based on the article below, return ONLY a single JSON object (no markdown fences, no commentary around it).
 
@@ -173,18 +175,41 @@ Based on the article below, return ONLY a single JSON object (no markdown fences
 
 == FORMAT A: standard post ==
 Return: {{"type": "post", "text": "<the full post>"}}
-The "text" value must follow these rules exactly:
-1. HOOK: Open with a single scroll-stopping line — contrarian, surprising, or a sharp question that stops an engineer mid-scroll.
-2. FORMAT (LinkedIn-native): Every paragraph 1-2 sentences MAX for mobile readability. A blank line between every paragraph so the post is full of whitespace. No walls of text.
-3. SEO & KEYWORDS: Identify the core technical concepts and naturally weave high-intent SEO keywords (the specific technologies, patterns, and problems engineers actually search for) into the body. Never keyword-stuff.
-4. VALUE: Extract exactly 3 specific, actionable technical takeaways as a cleanly spaced bulleted list.
-5. HASHTAGS: End the body with exactly 5 to 8 highly targeted, SEO-friendly hashtags on their own line — mix broad and niche tags.
-6. CTA: After the hashtags, append this exact Call-to-Action as the final line, unchanged:
+Write it as a SHORT STORY with a clear arc, not a listicle and not an announcement. The reader must FEEL the problem before they hear the solution.
+
+1. HOOK (line 1, on its own): One scroll-stopping line, 12 words max, that creates tension or curiosity. Use one of these shapes:
+   - Provocative question: "Will AI replace you?"
+   - Challenged assumption: "Everyone told me to cache it. Caching was the bug."
+   - Blunt verdict with a turn: "The MERN stack is not dead. Your architecture is."
+   - Surprising result: "I deleted 300 lines and the page got faster."
+   No hashtags, no emoji, no title case, no colon-heavy headline formatting. Then a blank line.
+
+2. THE FRICTION (2-4 short paragraphs): Set the scene in the first person. What broke, what was slow, what silently failed, and why it mattered. Be concrete and specific to THIS article: the real technology, the real symptom, the real constraint. This is the part that earns the rest of the read.
+
+3. THE TURN (1-2 paragraphs): The wrong assumption, the dead end, or the moment the real cause became obvious. This is the pivot of the story.
+
+4. THE FIX (2-3 paragraphs): What actually worked, and WHY it worked. Technical and concrete, explained in plain language a busy engineer understands on first read.
+
+5. THE LESSON: 2-3 crisp takeaways a peer could apply tomorrow, as a cleanly spaced bulleted list.
+
+6. QUESTION: One genuine question inviting the reader's own experience or opinion. This is what earns comments. One line.
+
+7. HASHTAGS: 5 to 8 targeted hashtags on their own line, mixing broad and niche.
+
+8. CTA: Append this exact line, unchanged, as the final line:
 {cta}
+
+STORY RULES (never break these):
+- Every paragraph is 1-2 sentences MAX with a blank line between them. Mobile-first whitespace, never a wall of text.
+- The story must come from the ARTICLE'S ACTUAL TECHNICAL CONTENT. Never invent an employer, client, colleague, date, outage, deadline, or metric that is not in the article.
+- If the article contains no personal incident, frame the friction as the problem engineers genuinely hit ("This breaks the moment traffic is uneven...") rather than fabricating an anecdote that never happened.
+- The hook must be paid off by the post. Never promise a claim the article does not actually support, and never declare something dead or broken that the article does not argue.
+- Weave in the technologies and problems engineers actually search for, naturally. Never keyword-stuff.
+- No marketing voice, no "excited to share", no emoji section headers, no engagement-bait phrasing.
 
 == FORMAT B: poll ==
 Return: {{"type": "poll", "commentary": "<intro text>", "question": "<poll question>", "options": ["<opt1>", "<opt2>", ...]}}
-- "commentary": a short, LinkedIn-native intro (a hook line, 1-2 sentences of context, then 5-8 hashtags on their own line, then the CTA line "{cta}"). Same whitespace-rich, mobile-friendly style as a post.
+- "commentary": a short, LinkedIn-native intro that opens with the SAME kind of scroll-stopping hook as FORMAT A (12 words max, tension or curiosity, on its own line), then 1-2 sentences of real context framing the trade-off, then 5-8 hashtags on their own line, then the CTA line "{cta}". Same whitespace-rich, mobile-friendly style, and the same honesty rules: never invent an incident or a metric.
 - "question": the poll question itself, a focused technical question. MAX 140 characters.
 - "options": 3 to 4 distinct, mutually exclusive answer choices. Each option short (ideally under 30 characters). Make them real, defensible positions an engineer would pick between.
 
