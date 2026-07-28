@@ -143,17 +143,15 @@ def generate_linkedin_content(title, content, url, want_poll=False):
     rather than left to the model, which otherwise over-produces polls for
     trade-off-heavy articles.
     """
-    # The article URL is deliberately kept OUT of the post body: LinkedIn
-    # demotes posts that push people off-platform, which was capping reach at
-    # roughly the size of the initial test batch. The link is posted as the
-    # FIRST COMMENT instead, automatically, immediately after publishing — so
-    # readers still get it and the post keeps its distribution.
+    # The article URL goes in the post body. It was previously posted as the
+    # first comment (to dodge LinkedIn's off-platform-link demotion), but that
+    # comment step was unreliable and left the post pointing at a "first comment"
+    # that never appeared — so the link lives in the post again.
     # UTM-tagged so LinkedIn traffic stays distinguishable in site analytics.
     article_link = (
         f"{url}?utm_source=linkedin&utm_medium=social&utm_campaign=auto-pipeline"
     )
-    comment_text = f"Full write-up here: {article_link}"
-    cta = "Full write-up in the first comment."
+    cta = f"Full write-up: {article_link}"
 
     if want_poll:
         format_instruction = (
@@ -244,7 +242,6 @@ Article content:
             "commentary": commentary,
             "question": (data.get("question") or "").strip()[:140],
             "options": options,
-            "comment_text": comment_text,
         }
 
     if isinstance(data, dict) and isinstance(data.get("text"), str):
@@ -255,7 +252,7 @@ Article content:
     if cta not in post:
         post = f"{post}\n\n{cta}"
 
-    return {"type": "post", "text": post, "comment_text": comment_text}
+    return {"type": "post", "text": post}
 
 
 IMAGE_MODEL = "gpt-image-1"
@@ -632,19 +629,6 @@ def process_next_url():
 
     print(f"Successfully published to LinkedIn (post id: {post_id})")
 
-    # Drop the article link in as the first comment. Non-fatal: the post is
-    # already live, so a comment failure is logged and the run still succeeds.
-    comment_id = None
-    try:
-        comment_id = comment_on_post(post_id, content.get("comment_text", ""))
-        print(f"Posted the article link as the first comment (id: {comment_id})")
-    except Exception as exc:
-        print(
-            f"Could not post the link comment ({exc}). "
-            f"The post is live; add this link manually if you want it: "
-            f"{content.get('comment_text', '')}"
-        )
-
     record = {
         "status": "published",
         "type": content["type"],
@@ -652,8 +636,6 @@ def process_next_url():
         "title": article["title"],
         "image_url": article["image_url"],
         "linkedin_post_id": post_id,
-        "link_comment_id": comment_id,
-        "link_comment_posted": bool(comment_id),
     }
     if content["type"] == "poll":
         record["commentary"] = content["commentary"]
