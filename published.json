@@ -606,5 +606,21 @@
     "link_comment_posted": false,
     "post": "Optimistic UI is not the hard part.\n\nThe hard part is the 120\u2013250 ms where the user stops trusting the app.\n\nIn React, that gap is enough for double-clicks, repeated submits, and two writes crossing in the network. When the p95 round-trip is to another region, \u201cjust wait for the server\u201d stops being a UX strategy.\n\nThe scary bug is not a slow spinner. It is the client showing one todo, the server holding another, and the next write coming back as 412 Precondition Failed.\n\nOr worse, no 412 at all, just corrupted state because the optimistic cache started acting like the database.\n\nThe turn for me was accepting that optimistic state must be disposable.\n\nIf the client cannot throw away every guess and rebuild from the last server snapshot, it is not optimistic UI. It is a fork.\n\nWhat worked was boring contract work.\n\nEvery patch gets a stable mutationId and an HTTP idempotency key. Every write carries If-Match with the entity version or ETag.\n\nThe server validates, dedupes, and echoes the mutationId back with the final canonical snapshot.\n\nIn React 18 with TanStack Query v5, TypeScript, and a small Zustand store, components never render the queue directly.\n\nThey render derived state: committed server data plus pending patches. On ack, commit the server snapshot.\n\nOn reject or version conflict, drop the failed patch and replay the remaining patches over the last known good base.\n\nThat rebase step is the whole game.\n\nDo not surgically undo one optimistic change and hope the rest still lines up. Out-of-order responses, spam-clicks, WebSocket broadcasts, and 412s all become manageable when the server snapshot is the base and mutationId is the join key.\n\n- Treat optimistic cache as a view, never canonical state.\n\n- Require version/ETag, idempotency key, and echoed mutationId as server contracts.\n\n- Test reducers/selectors for rollback and rebase logic before testing components.\n\nWhere do you draw the line between optimistic UI and just disabling the button?\n\n#React #TypeScript #TanStackQuery #Zustand #FrontendArchitecture #OptimisticUI #ETag #WebDevelopment\n\nFull write-up in the first comment.",
     "has_image": true
+  },
+  "https://yaseenkhatib.streamerosai.com/blog/when-usememo-actually-helps-in-react-19-and-how-to-measure-it/": {
+    "status": "published",
+    "type": "poll",
+    "timestamp": "2026-07-29T11:56:42.173632+00:00",
+    "title": "When useMemo actually helps in React 19, and how to measure it",
+    "image_url": "https://yaseenkhatib.streamerosai.com/og/when-usememo-actually-helps-in-react-19-and-how-to-measure-it.jpg",
+    "linkedin_post_id": "urn:li:ugcPost:7488200829850742785",
+    "commentary": "Everyone told me to memoize it. The dependency was the bug.\n\nReact 19 didn\u2019t change useMemo\u2019s deal: it memoizes a pure render-time computation, not unstable data flow. The hard call is whether to wrap the derived value, stabilize the inputs upstream, or delete the memo until Profiler proves it earns its keep.\n\n#ReactJS #React19 #useMemo #PerformanceProfiling #ReactDevTools #whyDidYouRender #FrontendEngineering\n\nFull write-up: https://yaseenkhatib.streamerosai.com/blog/when-usememo-actually-helps-in-react-19-and-how-to-measure-it/?utm_source=linkedin&utm_medium=social&utm_campaign=auto-pipeline",
+    "question": "React 19 render feels slow. What do you do before adding useMemo?",
+    "options": [
+      "Profile/mark first",
+      "Stabilize inputs",
+      "Memoize derived data",
+      "Delete trivial memos"
+    ]
   }
 }
