@@ -409,6 +409,16 @@ def _linkedin_author_urn(token):
         headers={"Authorization": f"Bearer {token}"},
         timeout=30,
     )
+    if resp.status_code == 401:
+        # LinkedIn access tokens expire after ~60 days and cannot be
+        # auto-refreshed without partner-program approval, so this is routine.
+        raise SystemExit(
+            "LINKEDIN_ACCESS_TOKEN expired or revoked (401 from /v2/userinfo).\n"
+            "Fix: LinkedIn Developer portal -> your app -> OAuth token generator\n"
+            "(https://www.linkedin.com/developers/tools/oauth/token-generator),\n"
+            "generate a token with the same scopes, then update the\n"
+            "LINKEDIN_ACCESS_TOKEN secret in this repo's Actions settings."
+        )
     resp.raise_for_status()
     return f"urn:li:person:{resp.json()['sub']}"
 
