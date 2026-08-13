@@ -652,5 +652,21 @@
     "linkedin_post_id": "urn:li:share:7490736780481191936",
     "post": "The hard part was not encryption. It was custody.\n\nI was wiring up local storage for a Tauri app, and the easy answer looked obvious: encrypt the JSON store or SQLite export before it hits disk.\n\nThen the uncomfortable question showed up: where does the private key live?\n\nIf I asked for a passphrase, I had made key management the user's problem. If I used cloud KMS, I had broken the local-first model and added a dependency for data that never needed to leave the machine.\n\nAnd if the frontend ever touched raw keys, I had widened the blast radius for no good reason.\n\nThe turn was realizing the app did not need a new secret system. macOS, Windows, and Linux already ship one.\n\nSo I stopped treating the encryption key like app state and started treating it like a local credential.\n\nOn first run, Rust generates an age X25519 identity. I store only the age secret key string in the OS keychain, and keep the public recipient in app config.\n\nReads and writes go through Tauri commands, not frontend crypto. The command pulls the secret from the keychain, rebuilds the identity, and streams encryption or decryption to disk.\n\nThat streaming part matters. The store can be a JSON file or a SQLite export, and I do not need to load the whole thing into memory just to protect it at rest.\n\nRotation became a command too: decrypt with the old key from the keychain, generate a new identity, update the keychain entry, re-encrypt with the new recipient, and record success.\n\nFor bigger stores, batch the rewrap and temporarily include both old and new recipients during the cutover.\n\n- Encrypt local-first data without turning every user into a key manager.\n\n- Keep private keys out of the frontend; expose narrow Rust commands instead.\n\n- Make rotation idempotent and transactional, or it will fail at the worst time.\n\nHow are you handling at-rest encryption in desktop apps: passphrases, OS keychain, cloud KMS, or something else?\n\n#Tauri #RustLang #LocalFirst #DesktopApps #ApplicationSecurity #Encryption #AgeEncryption #Keychain\n\nFull write-up: https://yaseenkhatib.streamerosai.com/blog/encrypt-tauri-local-storage-at-rest-with-age-os-keychain/?utm_source=linkedin&utm_medium=social&utm_campaign=auto-pipeline",
     "has_image": true
+  },
+  "https://yaseenkhatib.streamerosai.com/blog/zero-account-auth-device-bound-identity-capability-tokens/": {
+    "status": "published",
+    "type": "poll",
+    "timestamp": "2026-08-13T15:15:57.979306+00:00",
+    "title": "Zero-Account Auth: Device-Bound Identity + Capability Tokens",
+    "image_url": "https://yaseenkhatib.streamerosai.com/og/zero-account-auth-device-bound-identity-capability-tokens.jpg",
+    "linkedin_post_id": "urn:li:ugcPost:7493686794002243584",
+    "commentary": "Stateless auth moves the pain, not removes it.\n\nIn a zero-account model, the device key becomes the principal, and every request proves possession with DPoP plus a signed capability token. The trade-off is revocation: you can keep auth out of the hot path, but then TTLs, signer rotation, and emergency denylists have to carry more weight.\n\n#Authentication #APISecurity #DPoP #CapabilityTokens #WebCrypto #ZeroTrust #PASETO\n\nFull write-up: https://yaseenkhatib.streamerosai.com/blog/zero-account-auth-device-bound-identity-capability-tokens/?utm_source=linkedin&utm_medium=social&utm_campaign=auto-pipeline",
+    "question": "For zero-account APIs, where would you put revocation complexity?",
+    "options": [
+      "Short TTL + rotation",
+      "Central session state",
+      "Emergency jti denylist",
+      "Keep user accounts"
+    ]
   }
 }
