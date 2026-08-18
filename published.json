@@ -668,5 +668,15 @@
       "Emergency jti denylist",
       "Keep user accounts"
     ]
+  },
+  "https://yaseenkhatib.streamerosai.com/blog/kill-async-deadlocks-in-tauri-with-tokio-task-dumps-tracing/": {
+    "status": "published",
+    "type": "post",
+    "timestamp": "2026-08-18T10:21:38.320019+00:00",
+    "title": "Kill Async Deadlocks in Tauri with Tokio Task Dumps + Tracing",
+    "image_url": "https://yaseenkhatib.streamerosai.com/og/kill-async-deadlocks-in-tauri-with-tokio-task-dumps-tracing.jpg",
+    "linkedin_post_id": "urn:li:share:7495424661137195008",
+    "post": "It looked deadlocked. The scheduler was just starving.\n\nI used to treat async Rust freezes like classic lock-order bugs. In a Tauri app, that instinct sends you digging through mutexes while the UI sits there looking guilty.\n\nThe ugly version is quieter: a command starts work, a bounded channel fills up, one task holds a lock across an await, another task waits forever to send, and the cooperative Tokio scheduler keeps everyone politely stuck.\n\nTokio does not magically save you from that. Tauri does not either.\n\nThe turn for me was realizing I did not need another log line saying started job. I needed to see the tasks themselves: running, idle, waker counts, spans, and which long-lived workflow they belonged to.\n\nSo I stopped guessing and wired in tokio-console with console-subscriber, built with tokio_unstable, and bound the console server to loopback. In production, I would not leave that wide open; it belongs behind a feature flag or an authenticated command.\n\nThe useful bit is pairing the task dump with tracing. Generate a UUID in the frontend, pass it into the Tauri command, record it as a span field with #[instrument], and run with RUST_LOG=tauri_app=trace.\n\nNow req_id shows up in logs and tokio-console. Filter by that field and the frozen workflow stops being a ghost; you can see the related tasks and spans in one chain.\n\nThe fix is usually boring, which is good. Keep critical sections short, prefer tokio::sync::Mutex when you really need async locking, and do not hold locks across awaits.\n\nFor long jobs, keep CancellationTokens and JoinHandles. Wrap work in tokio::select! so cancellation has a path, add timeouts around awaits and channel operations, and use try_send where backpressure should fail instead of freezing the pipeline.\n\nIf a task cooperates, cancel it cleanly. If it ignores the token, abort the JoinHandle and keep the Tauri UI alive instead of forcing a restart.\n\n- Most async deadlocks I debug now are scheduler starvation, not textbook lock-order bugs.\n\n- Bounded channels without timeouts can turn backpressure into a freeze.\n\n- Task dumps plus tracing spans beat vibes every time.\n\nWhat is your go-to move when a Tokio app looks deadlocked but nothing obvious owns the lock?\n\n#RustLang #Tokio #Tauri #AsyncRust #Tracing #TokioConsole #ProductionDebugging\n\nFull write-up: https://yaseenkhatib.streamerosai.com/blog/kill-async-deadlocks-in-tauri-with-tokio-task-dumps-tracing/?utm_source=linkedin&utm_medium=social&utm_campaign=auto-pipeline",
+    "has_image": true
   }
 }
