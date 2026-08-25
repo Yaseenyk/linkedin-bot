@@ -698,5 +698,21 @@
     "linkedin_post_id": "urn:li:share:7496149687230660608",
     "post": "The frame dropped, but the stack trace looked innocent.\n\nTauri performance bugs have this annoying shape: Rust fires an event, JavaScript handles it, React commits, then the compositor paints.\n\nWhen the frame budget blows, each side can look clean if you inspect it alone. Rust has its spans, DevTools has its Performance panel, and the real delay hides in the handoff.\n\nThe symptom was not a crash or an obvious hot function. It was that uncomfortable gap where an interaction felt late, but the evidence lived in two different timelines.\n\nMy first wrong assumption was that I could reason across the IPC boundary by matching logs and timestamps. That falls apart fast because Rust Instant and the webview performance.now() are not the same clock.\n\nThe turn was treating the boundary itself as something to instrument, not something to mentally subtract.\n\nI added a correlation id to the Rust event and carried it through the JavaScript handler into the UI marks. Rust spans included corr_id and useful args, while the UI used User Timing marks and measures so DevTools could show the handler, React work, and paint on the main thread.\n\nThen I exposed a tiny clock endpoint and did a ping-pong sync. I picked the minimum round-trip sample to reduce jitter, stored offsetUs, and used that offset when merging the traces.\n\nThe last piece was boring but important: export the UI marks as Chrome Trace Events, take the Rust trace from tracing-chrome, and merge both JSON files with a small Node script. Since tracing-chrome already uses microseconds, shifting Rust timestamps by OFFSET_US puts everything on the same axis.\n\nNow the flamegraph tells the story in one place. Rust spans sit next to User Timing slices and paints, so the side that missed the frame budget is visible instead of guessed.\n\n- If your app crosses Tauri IPC, profile the crossing, not just each side.\n\n- Never compare Rust Instant and performance.now() without clock sync.\n\n- Thread a corr_id from Rust event to React paint so every frame has lineage.\n\nWhere do you usually lose time in desktop webview apps: native work, IPC, React, or paint?\n\n#Tauri #RustLang #ReactJS #PerformanceEngineering #Flamegraphs #ChromeDevTools #WebView #FrontendPerformance\n\nFull write-up: https://yaseenkhatib.streamerosai.com/blog/flamegraphs-over-tauri-ipc-from-rust-event-to-react-paint/?utm_source=linkedin&utm_medium=social&utm_campaign=auto-pipeline",
     "has_image": true
+  },
+  "https://yaseenkhatib.streamerosai.com/blog/simd-sentiment-scoring-in-rust-via-wasm-workers-no-ui-jank/": {
+    "status": "published",
+    "type": "poll",
+    "timestamp": "2026-08-25T10:23:56.122937+00:00",
+    "title": "SIMD sentiment scoring in Rust via WASM workers (no UI jank)",
+    "image_url": "https://yaseenkhatib.streamerosai.com/og/simd-sentiment-scoring-in-rust-via-wasm-workers-no-ui-jank.jpg",
+    "linkedin_post_id": "urn:li:ugcPost:7497961956721713152",
+    "commentary": "I didn\u2019t need a model. I needed spare frames.\n\nFor chat sentiment, the hot path is often just a Float32 sum over token weights with a few scalar rules around it. Rust + WASM SIMD in a Web Worker keeps keystroke-time scoring off the UI thread, but it adds worker/wasm copy costs and fallback complexity.\n\n#WebAssembly #RustLang #SIMD #WebWorkers #FrontendPerformance #ClientSideAI #JavaScript\n\nFull write-up: https://yaseenkhatib.streamerosai.com/blog/simd-sentiment-scoring-in-rust-via-wasm-workers-no-ui-jank/?utm_source=linkedin&utm_medium=social&utm_campaign=auto-pipeline",
+    "question": "For keystroke-time chat sentiment, what would you ship?",
+    "options": [
+      "Server transformer",
+      "JS Web Worker",
+      "WASM SIMD Worker",
+      "Electron N-API"
+    ]
   }
 }
