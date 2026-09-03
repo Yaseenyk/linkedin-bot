@@ -760,5 +760,15 @@
       "Store both models",
       "Backend normalizes"
     ]
+  },
+  "https://yaseenkhatib.streamerosai.com/blog/compiling-react-flow-graph-agent-pipeline/": {
+    "status": "published",
+    "type": "post",
+    "timestamp": "2026-09-03T14:02:40.901105+00:00",
+    "title": "How I Compile a React Flow Graph So It Actually Runs",
+    "image_url": "https://yaseenkhatib.streamerosai.com/og-lockup.png",
+    "linkedin_post_id": "urn:li:share:7501278496267268096",
+    "post": "I had a React Flow canvas that looked done. It was lying.\n\nOn IntegrateX, the UI had nodes, edges, positions, and all the comforting signs of a workflow builder. But when it came time to run it, what I actually had was decorated JSON.\n\nThe executor did not care where a node sat on the canvas. It needed to know which capability fed which, what could start now, what had to wait, and whether a user had drawn a cycle that would spin workers forever.\n\nThe tempting mistake was treating the React Flow graph as the runtime graph. That leaks presentation state into orchestration, and suddenly persistence, replay, validation, and concurrency all get muddier than they need to be.\n\nThe turn was admitting this was not a rendering problem. It was a compiler problem.\n\nSo I put a seam between the canvas and the runner. React Flow stayed in the Presentation layer, Zustand held the active orchestration state, and the serialization adapter reduced the rich UI object into a dependency map: node -> prerequisites.\n\nThat same adapter stripped UI-only metadata before persistence and cut the payload by 94%. More importantly, it gave the runner a shape it could reason about instead of a shape humans like to drag around.\n\nFrom there, Kahn's algorithm did the boring useful work. Nodes with zero unmet dependencies go first, successors drop their indegree as parents finish, and anything left over means the graph has a cycle.\n\nThat cycle check became a hard stop before allocating a worker or opening a stream. No heroic runtime recovery, just fail before the bad plan gets a chance to run.\n\nThe topological sort also gave me levels, not just an order. If A and B have no shared dependency, they sit in the same step and can run in parallel; C waits until both are done; D waits for C.\n\nThat mattered because concurrency came from the graph structure instead of hand-tuned queues. After fighting backpressure bugs in streamerOS, I wanted caps per level, streamed results, and no accidental render thrash or downstream starvation.\n\n- Compile the graph the machine needs, not the graph the user sees.\n\n- Use topological sorting as both execution planning and cycle detection.\n\n- Treat levels as your safe concurrency boundary, then cap parallelism there.\n\nWhat have you used as the seam between a visual workflow builder and the runtime that executes it?\n\n#ReactFlow #TypeScript #DAG #KahnsAlgorithm #WorkflowAutomation #AgentPipelines #Zustand #SoftwareArchitecture\n\nFull write-up: https://yaseenkhatib.streamerosai.com/blog/compiling-react-flow-graph-agent-pipeline/?utm_source=linkedin&utm_medium=social&utm_campaign=auto-pipeline",
+    "has_image": true
   }
 }
