@@ -790,5 +790,21 @@
     "linkedin_post_id": "urn:li:share:7503453506486579201",
     "post": "The endpoint was slow because another endpoint was busy.\n\nI used to treat Node latency like an I/O problem first. Database, network, disk, queue depth; the usual suspects.\n\nThen you hit the request that hashes a password, resizes an image, parses a 20MB document, or diffs thousands of rows.\n\nNothing is waiting anymore. JavaScript is occupying the one thread that also needs to accept every other request.\n\nThat is the nasty part: the slow operation does not stay contained. It turns into site-wide p99 latency, so the endpoint that looks innocent gets blamed too.\n\nThe tempting fix is to throw it in a worker thread. That is only half right.\n\nThe real turn is measuring event-loop delay alongside CPU. High p99 plus high CPU means the event loop is blocked; high p99 plus low CPU means a worker is probably just theater.\n\nWhat actually worked for me was not spawning workers on demand. A worker is a new isolate, and Node has to re-evaluate the module graph, so doing that per request can cost more than the work.\n\nUse a pool. Piscina is the boring, well-worn answer here, and boring is good when you're protecting latency.\n\nSize the pool to availableParallelism() - 1. The main thread still has to accept connections and serialize responses, and more CPU workers than cores just buys context switching.\n\nThen watch the data crossing the boundary. postMessage structured-clones by default, so a large Buffer can become the new bottleneck.\n\nTransfer ownership when you can. Use SharedArrayBuffer for large read-only data that multiple workers need, but do not casually share mutable state unless you're ready to think in Atomics and ordering.\n\nThe part people skip is the queue. An unbounded worker pool queue turns a burst into a lie: you accept every request, finish too few, and clients time out anyway.\n\nA fast 503 with a retry hint is often better engineering than pretending capacity exists.\n\n- Measure event-loop delay before adding threads.\n\n- Keep CPU work behind a bounded pool, not per-request workers.\n\n- Move bytes deliberately: clone, transfer, or share, but know the cost.\n\nWhere do you draw the line between worker threads and moving the job out of the request path entirely?\n\n#NodeJS #WorkerThreads #Piscina #JavaScriptPerformance #BackendEngineering #EventLoop #ProductionEngineering\n\nFull write-up: https://yaseenkhatib.streamerosai.com/blog/worker-threads-for-cpu-work-in-node/?utm_source=linkedin&utm_medium=social&utm_campaign=auto-pipeline",
     "has_image": true
+  },
+  "https://yaseenkhatib.streamerosai.com/blog/parsing-high-throughput-text-streams-in-node/": {
+    "status": "published",
+    "type": "poll",
+    "timestamp": "2026-09-10T13:59:26.445708+00:00",
+    "title": "Parsing high-throughput text streams in Node without falling behind",
+    "image_url": "https://yaseenkhatib.streamerosai.com/og-lockup.png",
+    "linkedin_post_id": "urn:li:ugcPost:7503814395798622211",
+    "commentary": "The parser was fast until TCP told the truth.\n\nAt low rates, chunk.toString().split('\\n') feels harmless. Under high-throughput Node streams, the real trade-off is whether you keep ergonomic parsing or take on manual Buffer scanning, remainder handling, and UTF-8 boundary safety.\n\n#NodeJS #Streams #Buffer #UTF8 #Backpressure #NDJSON #Performance\n\nFull write-up: https://yaseenkhatib.streamerosai.com/blog/parsing-high-throughput-text-streams-in-node/?utm_source=linkedin&utm_medium=social&utm_campaign=auto-pipeline",
+    "question": "For hot line-delimited streams in Node, what would you ship first?",
+    "options": [
+      "readline/for await",
+      "Manual Buffer scanner",
+      "Byte filter before JSON",
+      "Fix backpressure first"
+    ]
   }
 }
