@@ -806,5 +806,15 @@
       "Byte filter before JSON",
       "Fix backpressure first"
     ]
+  },
+  "https://yaseenkhatib.streamerosai.com/blog/keeping-long-running-node-processes-flat/": {
+    "status": "published",
+    "type": "post",
+    "timestamp": "2026-09-15T14:35:34.460445+00:00",
+    "title": "Keeping a long-running Node process flat for twelve hours",
+    "image_url": "https://yaseenkhatib.streamerosai.com/og-lockup.png",
+    "linkedin_post_id": "urn:li:share:7505635428474171392",
+    "post": "The heap was not leaking. It was thrashing.\n\nA ninety-second Node script lets you get away with murder. Allocate per message, build arrays casually, forget to remove a listener, and the process exits before your habits have a bill.\n\nA twelve-hour process is different. The graph starts looking guilty long before the stack trace says anything useful.\n\nThe nasty part is that two failures look almost the same from far away. Growth is memory that climbs and never comes back; churn is memory that bounces but forces V8's garbage collector to burn CPU and punch holes in your tail latency.\n\nI have seen people reach for --max-old-space-size immediately, because bigger heap feels like more runway. Sometimes it is, but if you cannot name the working set, you're usually just buying a later crash or longer GC pauses.\n\nThe turn for me was separating retained from allocated. A cache with no eviction, a per-request listener, or a timer holding a closure is a leak; a hot path creating a fresh Buffer for every message is often churn.\n\nThose do not have the same fix.\n\nFor churn, the real win was reusing memory only where the path was genuinely hot. One reusable Buffer can take per-message allocation to zero, but the returned view is only valid until the next call.\n\nThat constraint matters. If a caller keeps the view across an await, they can read somebody else's data, so I document it at the call site and keep that trick out of ordinary request handling.\n\nFor growth, I go hunting for anything that only ever appends and never removes. Unbounded caches, listener lists, queues, maps, timers \u2014 every one needs a deliberate bound, eviction rule, timeout, or cleanup path.\n\nI still like restart-on-threshold as an operational safety net. I just don't pretend it's a fix, because the interval will keep shrinking until the process can't live between restarts.\n\n- Log RSS, heap usage, and GC behavior from day one, every 30 seconds if you can.\n\n- Treat growth and churn as different bugs; the dashboard may blur them, but the fixes are unrelated.\n\n- Raise Node's old-space limit only when you can explain exactly what the memory is for.\n\nWhat do you usually check first when a long-running Node process starts drifting?\n\n#NodeJS #JavaScript #V8 #GarbageCollection #MemoryLeaks #BackendEngineering #PerformanceEngineering\n\nFull write-up: https://yaseenkhatib.streamerosai.com/blog/keeping-long-running-node-processes-flat/?utm_source=linkedin&utm_medium=social&utm_campaign=auto-pipeline",
+    "has_image": true
   }
 }
