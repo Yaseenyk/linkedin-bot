@@ -836,5 +836,21 @@
     "linkedin_post_id": "urn:li:share:7506360064040034304",
     "post": "The fastest cache was the leak.\n\nI\u2019ve seen Node caching start with the most innocent possible code: a Map in the same process.\n\nIt feels unbeatable at first. No network hop, no serialization, reads so fast they barely show up.\n\nThen the service keeps living, traffic keeps arriving, and that Map keyed by user id never stops growing.\n\nThat is the part people miss: an unbounded in-process cache is not a cache. It is memory growth proportional to success.\n\nThe next trap shows up when you scale horizontally.\n\nOne Node instance with a local LRU is simple. Ten instances means ten copies, ten cold misses, and potentially ten different answers after a write.\n\nThe obvious turn is Redis.\n\nRedis gives you one shared cache, but it also gives you a network round trip and serialization. If the thing you\u2019re avoiding is a tiny JSON.parse or a computation that takes a hundred microseconds, Redis can be the slower path.\n\nThe real bug became obvious under load, not in the happy path.\n\nA popular key expires. For a few microseconds nobody has repopulated it yet, so two hundred concurrent requests all miss and all two hundred run the same database query.\n\nThat is when the cache stops protecting the origin and starts amplifying traffic.\n\nThe fix was not \u201cadd more cache.\u201d It was layering the caches with different jobs.\n\nI use in-process LRU first, Redis second, then the origin. Memory handles the hottest reads, Redis coordinates across instances, and the database only gets called when both layers fail.\n\nThe local layer needs to forget sooner than Redis.\n\nIt cannot be invalidated remotely unless you build machinery for that, so I give it a shorter TTL. I also keep updateAgeOnGet off when I want TTL to mean \u201cthis expires after this long,\u201d not \u201cthis hot stale value can live forever.\u201d\n\nThe stampede fix is to cache the promise, not just the value.\n\nOn the first miss, store the in-flight promise. The next 199 requests await the same work instead of all launching identical queries.\n\nFor expensive values, stale-while-revalidate is often the best trade.\n\nServe the old value immediately, refresh in the background, and dedupe that refresh too. Otherwise stale reads just create a quieter version of the same stampede.\n\n- Bound every in-process cache, and size it from real object sizes, not vibes.\n\n- Use Redis when shared state is worth the round trip, not as a reflex.\n\n- Decide what stale data actually costs before choosing TTLs, deletes, or versioned keys.\n\nWhere do you draw the line between local LRU and Redis in your Node services?\n\n#NodeJS #Redis #Caching #BackendEngineering #Performance #DistributedSystems #TypeScript #WebDevelopment\n\nFull write-up: https://yaseenkhatib.streamerosai.com/blog/caching-layers-in-node-lru-and-redis/?utm_source=linkedin&utm_medium=social&utm_campaign=auto-pipeline",
     "has_image": true
+  },
+  "https://yaseenkhatib.streamerosai.com/blog/mongodb-migrations-that-dont-lock-production/": {
+    "status": "published",
+    "type": "poll",
+    "timestamp": "2026-09-22T14:16:46.422415+00:00",
+    "title": "MongoDB migrations that do not lock production",
+    "image_url": "https://yaseenkhatib.streamerosai.com/og-lockup.png",
+    "linkedin_post_id": "urn:li:ugcPost:7508167411951505408",
+    "commentary": "Deleting the old field is the trap.\n\nI\u2019ve learned the hard part of MongoDB migrations is not writing the backfill; it is keeping rollback possible while old and new code are both live. Schemaless only means the database will not stop you, so document versions, batched updates, and delayed cleanup become the safety rails.\n\n#MongoDB #DatabaseMigrations #ProductionEngineering #BackendEngineering #NoSQL #MERNStack #DevOps\n\nFull write-up: https://yaseenkhatib.streamerosai.com/blog/mongodb-migrations-that-dont-lock-production/?utm_source=linkedin&utm_medium=social&utm_campaign=auto-pipeline",
+    "question": "In a MongoDB field migration, when do you delete the old field?",
+    "options": [
+      "Same deploy as write flip",
+      "After backfill and soak",
+      "Only after version hits 100%",
+      "Avoid deleting fields"
+    ]
   }
 }
