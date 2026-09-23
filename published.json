@@ -852,5 +852,15 @@
       "Only after version hits 100%",
       "Avoid deleting fields"
     ]
+  },
+  "https://yaseenkhatib.streamerosai.com/blog/structured-concurrency-in-node-with-abortcontroller/": {
+    "status": "published",
+    "type": "post",
+    "timestamp": "2026-09-23T14:36:07.528209+00:00",
+    "title": "Structured concurrency in Node with AbortController",
+    "image_url": "https://yaseenkhatib.streamerosai.com/og-lockup.png",
+    "linkedin_post_id": "urn:li:share:7508534667713839104",
+    "post": "Promise.all was not the concurrency control.\n\nI used to treat Promise.all as the obvious Node answer: map the inputs, await the array, move on.\n\nThat holds at ten items. At eight hundred, you have just started eight hundred promises immediately, which can mean eight hundred sockets leaning on an upstream rate limiter or a database pool.\n\nThe nastier part is failure. One rejection makes Promise.all reject, the handler can return an error, and the other work keeps running in the background.\n\nThat is how a request that is already dead can still be holding connections, burning capacity, and eventually trying to write a result nobody is reading.\n\nThe bug was not that promises are bad. The bug was pretending Promise.all gave me ownership of the work after it had already started.\n\nOnce I looked at it that way, the missing rules were obvious: bound the fan-out, and make cancellation reach the actual I/O call.\n\nI switched the shape to a small pool. p-limit is fine, and the homemade version is just N workers pulling from a shared cursor.\n\nEight is a sane default for network-bound work, but it should come from something real: database pool size, upstream rate limit, or cores if the work is CPU-heavy.\n\nThen I put an AbortController around each unit of work and passed the signal all the way down. Not to the wrapper, not to the helper, to fetch, the database call, or whatever actually owns the socket.\n\nIn Express or Fastify, I wire client disconnects to abort too. Users close tabs and refresh; without that, abandoned requests still run their whole fan-out to completion.\n\nOnly after that do I decide the failure semantics. Promise.all-style first error wins is fine for all-or-nothing reports; Promise.allSettled is better when partial data is useful.\n\n- Promise.all starts everything you hand it; it is not a limit.\n\n- Cancellation only works if the AbortSignal reaches the leaf I/O.\n\n- Pick all-or-nothing or partial success deliberately; the default leak is not a strategy.\n\nWhere do you draw your concurrency limit: DB pool, upstream rate limit, CPU cores, or something else?\n\n#NodeJS #JavaScript #TypeScript #BackendEngineering #AbortController #StructuredConcurrency #ExpressJS #Fastify\n\nFull write-up: https://yaseenkhatib.streamerosai.com/blog/structured-concurrency-in-node-with-abortcontroller/?utm_source=linkedin&utm_medium=social&utm_campaign=auto-pipeline",
+    "has_image": true
   }
 }
