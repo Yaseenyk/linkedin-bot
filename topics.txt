@@ -1,10 +1,14 @@
 # Standalone post topics, one per line, consumed top-down. Each becomes a
 # LinkedIn story post (or a poll, on poll slots) that links to the portfolio
 # home page, not to an article. Topics win over urls.txt while any remain.
-# Keep every topic answerable from the VERIFIED FACTS block in main.py; the
-# model is forbidden from inventing incidents or metrics to fill a gap.
 #
-# Series: AI inside the MERN stack (Oct 2026).
+# Honesty rule: a topic may ask for an opinion or a design judgment about
+# anything, but first-person claims are limited to the VERIFIED FACTS block in
+# main.py. Phrase topics as "what I check", "why I'd", "the trade-off", never
+# as an incident the author did not have. 50 topics; at 3 slots a week with a
+# meme every fifth slot this is roughly five months of posting.
+#
+# ---- Series 1: AI inside the MERN stack (from the shipped concierge/bot code)
 Adding a grounded RAG endpoint to an existing Express and Node API without a rewrite: embed, retrieve, generate, and the one guard that matters
 Why my RAG chatbot refuses to answer below a cosine score of 0.55 instead of guessing, and how the refusal shows up in the UI as a trace
 Chunking a blog corpus for embeddings: paragraph boundaries, stable vector ids, and a nightly idempotent re-index that stays inside a free tier
@@ -15,3 +19,51 @@ Two-pass image generation for a content pipeline: a text model writes the art-di
 Allowlist prompting: how my outreach drafter is forbidden from mirroring a job description's stack back as my experience, and why a draft is never auto-sent
 What bulk AI-generated content did to my site: indexed pages fell from 88 to 25 in one day, impressions hit zero, and the fix was fewer, first-hand posts
 An AI agent that proposes and a human that commits: the review-and-confirm boundary on every database write in Sable, a local-first finance agent in React Native
+#
+# ---- Series 2: RAG and retrieval decisions a MERN team actually faces
+MongoDB Atlas Vector Search versus a dedicated vector store for a MERN app: the trade-off I'd weigh before adding a second database
+Hybrid retrieval in a RAG endpoint: when keyword search beats embeddings, and why I'd union both before ranking
+Showing the model's work: why a chat UI should render retrieval time, top score and the guardrail result instead of a spinner
+Capping RAG context at a character budget instead of a chunk count, and what that does to answer quality
+Embedding model choice for a small corpus: why a 768-dimension open model on a free tier was enough for a portfolio and when it would not be
+Why a RAG endpoint should return its sources as URLs, and how that changes what users trust
+The quiet failure of RAG: retrieval that works just well enough to be wrong, and the trace that catches it
+Stateless MCP over plain HTTP: why I skipped SSE sessions for a read-only tool server, and when a team would need them
+Exposing an internal product to Claude through three MCP tools: how I decided what a tool should and should not do
+Serving an LLM feature from a Cloudflare Worker next to a static Next.js export: the boundary that keeps the site free and fast
+#
+# ---- Series 3: LLM output, control flow and cost in Node services
+JSON mode is not a schema: why I validate every model response in Node before it touches state
+Deterministic control flow around LLM calls: the cadence, retries and format decisions I keep out of the prompt
+Prompt rules that encode honesty: banning invented metrics in a generation prompt and what it does to output quality
+Streaming LLM tokens from Node to a React UI: the proxy and backpressure details that bite before the first demo
+Caching LLM responses by meaning rather than by string: when semantic caching pays for itself on a Node API
+Token budgets as an engineering constraint: how I size context, cap output and keep an AI feature on a free tier
+The art-director pattern: putting a cheap text model in front of an expensive image model to get specific results
+Vision models for boring work: OCR of a job-post screenshot into structured fields, and the fields I refuse to trust
+Prompt injection through retrieved content: the attack surface a RAG endpoint opens in a MERN app and the guards I'd put first
+Evaluating a RAG feature without a benchmark team: the handful of fixed questions I run after every re-index
+#
+# ---- Series 4: the 2026 stack shift (Next.js 16, Node 26, React Compiler)
+Node 26 reaches Active LTS: what I check in a long-running Node service before upgrading, from stream behaviour to native addons
+Next.js 16 made caching opt-in with Cache Components: how I'd decide what a server component may cache
+React Compiler versus hand-written useMemo: the measurement I'd want before deleting memoization in a large React app
+React Server Components for a MERN team: which parts of an Express API survive and which move into the server component tree
+Turbopack by default in Next.js 16: what changes for a monorepo build, and what I'd verify before trusting the faster build
+Static export in Next.js is still underrated: how a portfolio ships from GitHub Pages with a Worker doing the dynamic parts
+TanStack Start versus Next.js for a new SaaS: type-safe routing as the deciding factor, and when it is not enough
+Bun in development, Node in production: the split that makes sense to me and the risk a team takes if it stops there
+Express 5 in an existing codebase: async error handling and ReDoS fixes, and the middleware assumptions that break
+TypeScript strictness as a hiring signal: why a strict tsconfig tells me more about a team than their framework choice
+#
+# ---- Series 5: shipping, pipelines and the job market for MERN engineers
+MERN alone is not enough in 2026: the skills a senior full-stack role actually tests, from TypeScript to deployment to AI integration
+Git as a database for a bot: why my autonomous pipelines keep state in a committed JSON file instead of a server
+Why I run content pipelines on GitHub Actions with zero infrastructure, and the limits that would make me move
+Link placement on LinkedIn: moving the article link to the first comment, watching the comment step fail, and moving it back
+The cost of posting daily: why I cut an autonomous pipeline to three posts a week and let each one earn its reach
+Honest portfolios beat impressive ones: why I publish real artifacts, real numbers only when I have them, and real failures
+Designing a pipeline that degrades instead of failing: image generation, comments and storage as optional steps around a core publish
+Local-first AI on a phone: keeping finance data in on-device SQLite while an LLM proposes changes it cannot commit
+Serialization adapters for rich client state: how a schema-aware adapter cut a React Flow payload by 94% and what it refused to drop
+Taking a client LMS from brief to a live dev platform in a day: what a tight scope and a stable stack make possible, and what I would not promise

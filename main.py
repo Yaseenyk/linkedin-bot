@@ -221,7 +221,8 @@ FACTS = """VERIFIED FACTS ABOUT THE AUTHOR'S OWN SYSTEMS (the only first-person 
 - LinkedIn pipeline (this bot): Python on GitHub Actions, no server. Queue and topics are text files, state is a JSON file committed back to the repo. Posts come from OpenAI in JSON mode; the post format (story, poll, meme) is chosen by code on a fixed cycle because the model over-produced polls when allowed to choose. Cover images are generated in two passes: a text model writes an art-director brief, then gpt-image-1 renders it; the result is re-encoded through Pillow to drop C2PA metadata, which LinkedIn otherwise surfaces as a badge. The article link was once posted as a first comment to dodge link demotion; the comment step was unreliable so the link went back into the body.
 - AI blog writer: GitHub Actions plus OpenAI structured outputs with a strict JSON schema (title, description, tags, keywords, takeaways, body) so no SEO field can be skipped. Its schedule was disabled after bulk AI-generated posts got the site de-indexed: indexed pages fell from 88 to 25 in one day (2026-07-10 to 2026-07-11), impressions went to zero, and 72 URLs sat in "Discovered, currently not indexed". Recovery meant shrinking the corpus to first-hand work, not publishing more.
 - IntegrateX: a React Flow workflow engine whose schema-aware serialization adapter cut graph payloads by 94%. This is the only performance number the author ever cites.
-- streamerOS: desktop cockpit for streamers (real-time chat ingestion, telemetry, OBS automation)."""
+- streamerOS: desktop cockpit for streamers (real-time chat ingestion, telemetry, OBS automation).
+- Path Saathi: a client LMS taken from a Monday MVP brief to a working platform live on a dev environment the next day. No other delivery-time claims exist."""
 
 
 def generate_linkedin_content(title, content, cta, want_poll=False, source="article"):
