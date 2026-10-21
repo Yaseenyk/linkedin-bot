@@ -1,0 +1,17 @@
+# Standalone post topics, one per line, consumed top-down. Each becomes a
+# LinkedIn story post (or a poll, on poll slots) that links to the portfolio
+# home page, not to an article. Topics win over urls.txt while any remain.
+# Keep every topic answerable from the VERIFIED FACTS block in main.py; the
+# model is forbidden from inventing incidents or metrics to fill a gap.
+#
+# Series: AI inside the MERN stack (Oct 2026).
+Adding a grounded RAG endpoint to an existing Express and Node API without a rewrite: embed, retrieve, generate, and the one guard that matters
+Why my RAG chatbot refuses to answer below a cosine score of 0.55 instead of guessing, and how the refusal shows up in the UI as a trace
+Chunking a blog corpus for embeddings: paragraph boundaries, stable vector ids, and a nightly idempotent re-index that stays inside a free tier
+Writing an MCP server in plain TypeScript with no SDK: the four JSON-RPC methods Claude actually calls, so recruiters can interview my portfolio from inside their own AI
+Structured outputs in Node: a strict JSON schema on the model call plus Zod at the boundary, so model JSON never reaches React unvalidated
+Let the code pick the format, not the model: why my LinkedIn pipeline chooses story, poll or meme on a fixed cycle after the model over-produced polls
+Two-pass image generation for a content pipeline: a text model writes the art-director brief, gpt-image-1 renders it, Pillow strips the C2PA metadata LinkedIn would badge
+Allowlist prompting: how my outreach drafter is forbidden from mirroring a job description's stack back as my experience, and why a draft is never auto-sent
+What bulk AI-generated content did to my site: indexed pages fell from 88 to 25 in one day, impressions hit zero, and the fix was fewer, first-hand posts
+An AI agent that proposes and a human that commits: the review-and-confirm boundary on every database write in Sable, a local-first finance agent in React Native
