@@ -9,7 +9,6 @@
 # meme every fifth slot this is roughly five months of posting.
 #
 # ---- Series 1: AI inside the MERN stack (from the shipped concierge/bot code)
-Adding a grounded RAG endpoint to an existing Express and Node API without a rewrite: embed, retrieve, generate, and the one guard that matters
 Why my RAG chatbot refuses to answer below a cosine score of 0.55 instead of guessing, and how the refusal shows up in the UI as a trace
 Chunking a blog corpus for embeddings: paragraph boundaries, stable vector ids, and a nightly idempotent re-index that stays inside a free tier
 Writing an MCP server in plain TypeScript with no SDK: the four JSON-RPC methods Claude actually calls, so recruiters can interview my portfolio from inside their own AI
