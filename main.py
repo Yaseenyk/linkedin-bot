@@ -22,7 +22,7 @@ PREVIEW_DIR = Path("preview")
 
 OPENAI_MODEL = "gpt-5.5"
 
-PORTFOLIO_URL = "https://yaseenkhatib.streamerosai.com/"
+PORTFOLIO_URL = "https://yk.streamerosai.com/"
 BLOG_SECTION = "/blog/"
 
 # What each run publishes, by position in the cycle. The index is the number

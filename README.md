@@ -74,10 +74,10 @@ Runs Tue/Wed/Thu at 10:00 UTC via GitHub Actions. Adding a line to
 
 ---
 
-Built by [Yaseen Khatib](https://yaseenkhatib.streamerosai.com) — Senior
+Built by [Yaseen Khatib](https://yk.streamerosai.com) — Senior
 Full-Stack AI Engineer, Hyderabad. This pipeline is one of five products shipped
 solo; architecture teardowns of all of them are at
-[yaseenkhatib.streamerosai.com/products](https://yaseenkhatib.streamerosai.com/products).
+[yk.streamerosai.com/products](https://yk.streamerosai.com/products).
 
 Available for [architecture reviews, AI integration and custom
-systems](https://yaseenkhatib.streamerosai.com/solutions).
+systems](https://yk.streamerosai.com/solutions).
