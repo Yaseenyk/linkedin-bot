@@ -218,7 +218,7 @@ FACTS = """VERIFIED FACTS ABOUT THE AUTHOR'S OWN SYSTEMS (the only first-person 
 - Corpus indexing: a script fetches the site's llms-full.txt, splits each article on paragraph boundaries into chunks of about 1400 characters, embeds them in batches of 40 and upserts with stable ids (slug plus chunk index) so re-runs overwrite in place. It runs once a day on a GitHub Actions cron to stay inside the Workers AI free tier.
 - MCP server: hand-written JSON-RPC over Streamable HTTP in plain TypeScript, no SDK. It implements initialize, ping, tools/list and tools/call, returns 202 for notifications, and exposes three tools: search_portfolio, get_products, get_availability. Recruiters can add the URL to Claude and interrogate the portfolio from inside their own AI.
 - Outreach drafter: a passcode-gated endpoint that drafts job-application emails with OpenAI. The prompt carries an explicit allowlist of the author's real stack and a rule that a job description's technologies must never be mirrored back as experience. Optional OCR of a job-post screenshot via a vision model. Returns a draft only; the human sends it. The same propose-then-confirm boundary gates every database write in Sable, a local-first finance agent (SQLite on device, OpenAI function calling, React Native).
-- LinkedIn pipeline (this bot): Python on GitHub Actions, no server. Queue and topics are text files, state is a JSON file committed back to the repo. Posts come from OpenAI in JSON mode; the post format (story, poll, meme) is chosen by code on a fixed cycle because the model over-produced polls when allowed to choose. Cover images are generated in two passes: a text model writes an art-director brief, then gpt-image-1 renders it; the result is re-encoded through Pillow to drop C2PA metadata, which LinkedIn otherwise surfaces as a badge. The article link was once posted as a first comment to dodge link demotion; the comment step was unreliable so the link went back into the body.
+- LinkedIn pipeline (this bot): Python on GitHub Actions, no server. Queue and topics are text files, state is a JSON file committed back to the repo. Posts come from OpenAI in JSON mode; the post format (story, poll, meme) is chosen by code on a fixed cycle because the model over-produced polls when allowed to choose. Cover images are generated in two passes: a text model writes an art-director brief, then the image model renders it; the result is re-encoded through Pillow to drop C2PA metadata, which LinkedIn otherwise surfaces as a badge. The article link was once posted as a first comment to dodge link demotion; the comment step was unreliable so the link went back into the body.
 - AI blog writer: GitHub Actions plus OpenAI structured outputs with a strict JSON schema (title, description, tags, keywords, takeaways, body) so no SEO field can be skipped. Its schedule was disabled after bulk AI-generated posts got the site de-indexed: indexed pages fell from 88 to 25 in one day (2026-07-10 to 2026-07-11), impressions went to zero, and 72 URLs sat in "Discovered, currently not indexed". Recovery meant shrinking the corpus to first-hand work, not publishing more.
 - IntegrateX: a React Flow workflow engine whose schema-aware serialization adapter cut graph payloads by 94%. This is the only performance number the author ever cites.
 - streamerOS: desktop cockpit for streamers (real-time chat ingestion, telemetry, OBS automation).
@@ -344,7 +344,10 @@ Title: {title}
 
 # ---------------------------------------------------------------- images ---
 
-IMAGE_MODEL = "gpt-image-1"
+# Tried in order. OpenAI renames and retires image models, and the key in GitHub does not always see the same list
+# as a local one, so a single hard-coded name stopped every meme on 27 Oct 2026. IMAGE_MODEL (env) goes first.
+IMAGE_MODELS = [m for m in [os.environ.get("IMAGE_MODEL"), "gpt-image-1.5", "gpt-image-1-mini", "gpt-image-2", "gpt-image-1"] if m]
+IMAGE_MODEL = IMAGE_MODELS[0]
 
 # NOT brand-locked (unlike the portfolio's on-site OG covers in
 # scripts/ai_writer.py + generate-og-images.py). On LinkedIn the image should be
@@ -422,12 +425,33 @@ def _to_jpeg(image_bytes, quality=90):
         return image_bytes
 
 
+def _visible_image_models(client):
+    """For the log: which image models this key can actually see."""
+    try:
+        return sorted(m.id for m in client.models.list().data if "image" in m.id or "dall" in m.id)
+    except Exception as exc:
+        return [f"(could not list models: {exc})"]
+
+
 def _render_image(prompt, size="1536x1024"):
     client = _openai_client()
-    result = client.images.generate(
-        model=IMAGE_MODEL, prompt=prompt, size=size, quality="medium"
-    )
-    return base64.b64decode(result.data[0].b64_json)
+    last = None
+    for model in IMAGE_MODELS:
+        try:
+            result = client.images.generate(model=model, prompt=prompt, size=size, quality="medium")
+            if model != IMAGE_MODELS[0]:
+                print(f"Image rendered with fallback model {model}.")
+            return base64.b64decode(result.data[0].b64_json)
+        except Exception as exc:
+            text = str(exc)
+            last = exc
+            # A missing or unavailable model: try the next one. Anything else (billing, safety, network) will not be
+            # fixed by another model name, so stop and report it.
+            if not any(w in text for w in ("does not exist", "not found", "do not have access", "does not have access", "not available")):
+                raise
+            print(f"Image model {model} unavailable ({text[:120]}); trying the next.")
+    print("Image models visible to this key:", _visible_image_models(client))
+    raise last
 
 
 def generate_post_image(title, content=""):
@@ -961,7 +985,13 @@ def process_next():
     print(f"Slot: {slot} (entry #{len(published) + 1})")
 
     if slot == "meme":
-        return publish_meme(published)
+        result = publish_meme(published)
+        if result is None and not DRY_RUN:
+            # A meme that cannot be drawn must not freeze the cycle (it did for a week: the slot was retried and
+            # skipped on every run). Publish a regular post in its place; the entry count advances either way.
+            print("Meme could not be made; publishing a regular post for this slot instead.")
+            return publish_technical(published, want_poll=False)
+        return result
     return publish_technical(published, want_poll=(slot == "poll"))
 
 
