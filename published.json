@@ -931,5 +931,17 @@
     "post": "I asked the model for strict JSON.\n\nIt returned something spiritually adjacent.\n\nThe parser was less moved than I was.\n\nNow the architecture includes schemas, retries, and distrust.\n\nWhat is the most impressive non-JSON your model has confidently shipped?\n\n#AIEngineering #LLM #FullStackDevelopment #Backend\n\nMore of how I actually build this: https://yk.streamerosai.com/?utm_source=linkedin&utm_medium=social&utm_campaign=meme",
     "linkedin_post_id": "urn:li:share:7523660715971477504",
     "has_image": true
+  },
+  "topic:why-my-rag-chatbot-refuses-to-answer-below-a-cosine-score-of-0-55-instead-of-gue": {
+    "status": "published",
+    "type": "post",
+    "source": "topic",
+    "timestamp": "2026-11-04T17:41:49.684940+00:00",
+    "title": "Why my RAG chatbot refuses to answer below a cosine score of 0.55 instead of guessing, and how the refusal shows up in the UI as a trace",
+    "image_url": "",
+    "linkedin_post_id": "urn:li:share:7523801690685374464",
+    "topic": "Why my RAG chatbot refuses to answer below a cosine score of 0.55 instead of guessing, and how the refusal shows up in the UI as a trace",
+    "post": "The chatbot sounded confident. That was the problem.\n\nWhen I shipped my portfolio concierge, the happy path looked clean: a Cloudflare Worker, POST /api/chat, bge-base-en-v1.5 embeddings, Cloudflare Vectorize, and Llama 3.3 70B on Workers AI.\n\nThe rough edge was not retrieval failing loudly. It was retrieval finding something vaguely nearby, handing it to the model, and letting the model speak like it had evidence.\n\nThat is dangerous in a portfolio chatbot. If someone asks about experience I do not actually have, I would rather the system look limited than make me look dishonest.\n\nAt first the temptation was to treat it as a prompting problem. Add stronger instructions, tell the model to stay grounded, remind it not to guess.\n\nBut the trace made the real bug obvious: the model was not the first boundary. The retrieval score was.\n\nSo I put the refusal before generation.\n\nThe endpoint retrieves the top 5 chunks from Vectorize using cosine similarity, caps context at 6000 characters, and checks the best score before calling the model. If the best cosine score is below 0.55, it refuses with an honest outside my grounded context message instead of trying to sound useful.\n\nThe important part is that the refusal is visible. My terminal UI renders the trace step by step: vector search time, top score, chunk count, and the guardrail result.\n\nThat changed the feel of the system. A weak answer stopped being a mysterious LLM behavior and became a debuggable pipeline decision.\n\nThe corpus helps too. A GitHub Actions cron fetches llms-full.txt once a day, splits articles on paragraph boundaries into roughly 1400-character chunks, embeds in batches of 40, and upserts stable ids so reruns overwrite in place.\n\n- Put the refusal gate before generation, not after the model has already improvised.\n\n- Show retrieval evidence in the UI, even if the user is technical and the product is small.\n\n- Treat \u201cI don\u2019t know from my context\u201d as a feature, not a failure state.\n\nWhere do you draw the line in RAG: similarity threshold, reranker confidence, source count, or something else?\n\n#RAG #LLMEngineering #VectorSearch #CloudflareWorkers #MERNStack #TypeScript #AIEngineering\n\nMore of how I build this, with the code: https://yk.streamerosai.com/?utm_source=linkedin&utm_medium=social&utm_campaign=auto-pipeline",
+    "has_image": true
   }
 }
