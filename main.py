@@ -346,7 +346,9 @@ Title: {title}
 
 # Tried in order. OpenAI renames and retires image models, and the key in GitHub does not always see the same list
 # as a local one, so a single hard-coded name stopped every meme on 27 Oct 2026. IMAGE_MODEL (env) goes first.
-IMAGE_MODELS = [m for m in [os.environ.get("IMAGE_MODEL"), "gpt-image-1.5", "gpt-image-1-mini", "gpt-image-2", "gpt-image-1"] if m]
+IMAGE_MODELS = [m for m in [os.environ.get("IMAGE_MODEL"), "gpt-image-2.5-sunburst", "gpt-image-2.5-flare", "gpt-image-2", "gpt-image-1.5", "gpt-image-1-mini"] if m]
+# "high" is the top quality tier; set IMAGE_QUALITY=medium to spend less per image.
+IMAGE_QUALITY = os.environ.get("IMAGE_QUALITY", "high")
 IMAGE_MODEL = IMAGE_MODELS[0]
 
 # NOT brand-locked (unlike the portfolio's on-site OG covers in
@@ -438,7 +440,7 @@ def _render_image(prompt, size="1536x1024"):
     last = None
     for model in IMAGE_MODELS:
         try:
-            result = client.images.generate(model=model, prompt=prompt, size=size, quality="medium")
+            result = client.images.generate(model=model, prompt=prompt, size=size, quality=IMAGE_QUALITY)
             if model != IMAGE_MODELS[0]:
                 print(f"Image rendered with fallback model {model}.")
             return base64.b64decode(result.data[0].b64_json)
