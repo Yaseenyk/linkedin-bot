@@ -961,5 +961,17 @@
       "More overlap",
       "Versioned indexes"
     ]
+  },
+  "topic:writing-an-mcp-server-in-plain-typescript-with-no-sdk-the-four-json-rpc-methods-": {
+    "status": "published",
+    "type": "post",
+    "source": "topic",
+    "timestamp": "2026-11-10T17:25:20.923909+00:00",
+    "title": "Writing an MCP server in plain TypeScript with no SDK: the four JSON-RPC methods Claude actually calls, so recruiters can interview my portfolio from inside their own AI",
+    "image_url": "",
+    "linkedin_post_id": "urn:li:share:7525971870698102785",
+    "topic": "Writing an MCP server in plain TypeScript with no SDK: the four JSON-RPC methods Claude actually calls, so recruiters can interview my portfolio from inside their own AI",
+    "post": "The MCP SDK was the part I removed.\n\nI already had a portfolio concierge running in one Cloudflare Worker: POST /api/chat for grounded RAG, POST /mcp for Claude.\n\nThe RAG side was boring on purpose. It embedded my site's llms-full.txt with bge-base-en-v1.5, stored vectors in Cloudflare Vectorize, and refused to answer when retrieval was outside my grounded context.\n\nThe weird part was letting a recruiter interrogate that same portfolio from inside Claude. I didn't want a demo that only worked on my site, and I didn't want the server inventing experience because a job description happened to mention a framework.\n\nMy first instinct was to reach for an MCP SDK and treat the protocol like a whole platform. That made the worker feel heavier than the problem.\n\nThen I watched what Claude actually needed.\n\nFor my use case, MCP was just JSON-RPC over Streamable HTTP: initialize, ping, tools/list, and tools/call. Notifications got a 202, real calls got JSON-RPC responses, and everything else stayed intentionally small.\n\nSo I wrote the server in plain TypeScript.\n\ntools/list exposes search_portfolio, get_products, and get_availability. tools/call routes those into the same grounded corpus and guardrails I already trusted from /api/chat.\n\nThe important bit was not \"AI portfolio.\" It was the boundary.\n\nSearch can retrieve my real work. Availability can return what I explicitly provide. But if the best match is outside the indexed context, the system says it is outside my grounded context instead of trying to sound helpful.\n\nThat made the MCP server easier to reason about than the chatbot UI. Claude becomes another client, not a special case.\n\n- Start with the JSON-RPC methods your client actually calls before adding an SDK.\n\n- Reuse the same retrieval and refusal path across chat UI and MCP tools.\n\n- Treat \"not in my corpus\" as a product feature, not an error state.\n\nIf you were exposing your own work through MCP, what would you refuse to let the model answer?\n\n#TypeScript #MCP #JSONRPC #CloudflareWorkers #RAG #ClaudeAI #VectorSearch\n\nMore of how I build this, with the code: https://yk.streamerosai.com/?utm_source=linkedin&utm_medium=social&utm_campaign=auto-pipeline",
+    "has_image": true
   }
 }
