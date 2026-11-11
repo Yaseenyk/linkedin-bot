@@ -9,7 +9,6 @@
 # meme every fifth slot this is roughly five months of posting.
 #
 # ---- Series 1: AI inside the MERN stack (from the shipped concierge/bot code)
-Structured outputs in Node: a strict JSON schema on the model call plus Zod at the boundary, so model JSON never reaches React unvalidated
 Let the code pick the format, not the model: why my LinkedIn pipeline chooses story, poll or meme on a fixed cycle after the model over-produced polls
 Two-pass image generation for a content pipeline: a text model writes the art-director brief, gpt-image-1 renders it, Pillow strips the C2PA metadata LinkedIn would badge
 Allowlist prompting: how my outreach drafter is forbidden from mirroring a job description's stack back as my experience, and why a draft is never auto-sent
