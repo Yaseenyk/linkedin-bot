@@ -95,8 +95,22 @@ def remove_topic(topic):
     )
 
 
-def topic_key(topic):
-    slug = re.sub(r"[^a-z0-9]+", "-", topic.lower()).strip("-")[:80]
+def parse_topic(raw_topic):
+    """A topics.txt line is 'topic text', or 'topic text | url' or 'topic
+    text | url | cta label' to send that post somewhere other than the
+    portfolio home with the default CTA phrasing. url/cta default when
+    omitted, so every pre-existing topic (no '|') behaves exactly as before.
+    """
+    parts = [p.strip() for p in raw_topic.split("|")]
+    text = parts[0]
+    url = parts[1] if len(parts) > 1 and parts[1] else PORTFOLIO_URL
+    cta_label = parts[2] if len(parts) > 2 and parts[2] else "More of how I build this, with the code"
+    return {"text": text, "url": url, "cta_label": cta_label}
+
+
+def topic_key(raw_topic):
+    text = raw_topic.split("|", 1)[0].strip()
+    slug = re.sub(r"[^a-z0-9]+", "-", text.lower()).strip("-")[:80]
     return f"topic:{slug}"
 
 
@@ -915,10 +929,11 @@ def publish_technical(published, want_poll):
         return None
 
     if source["kind"] == "topic":
-        title = source["topic"]
+        parsed = parse_topic(source["topic"])
+        title = parsed["text"]
         material = f"TOPIC: {title}\n\n{FACTS}"
-        cta = f"More of how I build this, with the code: {with_utm(PORTFOLIO_URL)}"
-        key = topic_key(title)
+        cta = f"{parsed['cta_label']}: {with_utm(parsed['url'])}"
+        key = topic_key(source["topic"])
         image_url = ""
     else:
         article = scrape(source["url"])
@@ -971,7 +986,7 @@ def publish_technical(published, want_poll):
     published[key] = record
     save_published(published)
     if source["kind"] == "topic":
-        remove_topic(title)
+        remove_topic(source["topic"])
 
     return {"url": key, "title": title, "post": preview, "post_id": post_id}
 

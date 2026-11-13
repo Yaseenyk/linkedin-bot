@@ -1,12 +1,55 @@
 # Standalone post topics, one per line, consumed top-down. Each becomes a
-# LinkedIn story post (or a poll, on poll slots) that links to the portfolio
-# home page, not to an article. Topics win over urls.txt while any remain.
+# LinkedIn story post (or a poll, on poll slots). Topics win over urls.txt
+# while any remain.
+#
+# Link syntax: "topic text" on its own links to the portfolio home with the
+# default CTA phrasing, same as always. "topic text | url" sends the CTA
+# somewhere more specific (a product page, /hire/, a blog post) with the
+# default phrasing. "topic text | url | cta label" also changes the lead-in
+# words before the link. Only use a url that is actually live.
 #
 # Honesty rule: a topic may ask for an opinion or a design judgment about
 # anything, but first-person claims are limited to the VERIFIED FACTS block in
 # main.py. Phrase topics as "what I check", "why I'd", "the trade-off", never
-# as an incident the author did not have. 50 topics; at 3 slots a week with a
-# meme every fifth slot this is roughly five months of posting.
+# as an incident the author did not have.
+#
+# ---- Nov-Dec 2026 pivot: fewer "look what I shipped" posts, more of what the
+# ---- research (489 real LinkedIn posts, engagement-ranked) shows actually
+# ---- gets a developer hired: narrative arc, AI opinions, and a portfolio that
+# ---- can be interrogated, not announced. Roughly two months of posting at
+# ---- 3 slots/week; the Series 1-5 technical topics below resume after.
+#
+# ---- Series 0a: AI opinions and hot takes (genuinely held, Claude Code is the real daily tool)
+Everyone says AI will replace developers. Here is the one thing it actually replaced for me, and the one thing it made harder | https://yk.streamerosai.com/products/ai-blogger/ | See what broke when I let it run unsupervised
+Unpopular opinion: vibe-coding is fine for a weekend prototype and a liability anywhere real data is involved, and the line between the two is thinner than most people admit
+I do not let an AI agent write to a database without asking first. That one rule shaped how I built an entire finance app | https://yk.streamerosai.com/products/sable/ | See the propose-then-commit rule
+The scariest AI output is not the one that is wrong. It is the one that is confidently, plausibly wrong, and why every AI feature I ship has to admit what it does not know
+Why "it passed the tests" stopped meaning anything to me the moment an AI agent started writing the tests too
+An AI wrote most of my last ten blog drafts. The one thing it still cannot do is the actual reason anyone gets hired | https://yk.streamerosai.com/hire/ | What I look for instead
+#
+# ---- Series 0b: the de-indexing crash, honestly, as the setback-and-recovery story it actually was
+My site's indexed pages went from 88 to 25 in a single day. Here is exactly what I did in the 48 hours after | https://yk.streamerosai.com/blog/zero-dollar-content-engine/ | The full story
+I automated my content pipeline so well it broke Google's trust in my site. The fix was not smarter automation. It was less of it
+Impressions hit zero overnight. Every instinct said publish more to compensate. The fix was the opposite
+What watching a site get de-indexed taught me about the difference between content that fills a feed and content that earns one
+#
+# ---- Series 0c: the solo-builder path (5 products, 12 months, no team) as a career narrative, not an announcement
+I shipped 5 products solo in 12 months. No team, no funding, no roadmap I did not write myself | https://yk.streamerosai.com/products/ | What that actually looked like, week to week
+Nobody warns you that the hardest part of building alone is not writing the code. It is deciding what not to build next
+Nobody hands a solo builder a senior title, so I built a portfolio a recruiter could actually interrogate instead of asking for one | https://yk.streamerosai.com/hire/ | Talk to it yourself
+Nobody gives a solo builder a performance review, so I built one: an MCP server that lets Claude ask what I actually shipped, and check it against the code | https://yk.streamerosai.com/products/linkedin-pipeline/
+What shipping streamerOS, FitRank, SpotAI and two more in a year taught me about the difference between fast and sloppy | https://yk.streamerosai.com/projects/
+#
+# ---- Series 0d: practical, specific value (the highest comment-to-like ratio in the research), reframed from Series 1-3 below
+The one guardrail I would add to any RAG system before trusting it with a real user: make it refuse below a confidence threshold instead of guessing
+The cheapest way to catch a bad AI answer before your user does: make the model show its retrieval score, not just its answer
+I stopped asking "did the AI pass the test" and started asking "did it quietly change the test to pass". That question catches more bugs
+The config decision that actually decides whether your AI feature stays free or starts costing real money: the context budget, not the model you picked
+#
+# ---- Series 0e: hiring and career opinions (judgment, not a fabricated incident)
+"5 years experience with a 2-year-old framework" is the line in a job post that tells me more about the company than the role
+If I were hiring a senior engineer in 2026, here is the interview question I would ask instead of a leetcode puzzle | https://yk.streamerosai.com/hire/
+A resume tells you what someone did. It cannot be interrogated. That is the actual reason I rebuilt mine as something you can question instead of read | https://yk.streamerosai.com/products/linkedin-pipeline/ | Ask it something yourself
 #
 # ---- Series 1: AI inside the MERN stack (from the shipped concierge/bot code)
 Let the code pick the format, not the model: why my LinkedIn pipeline chooses story, poll or meme on a fixed cycle after the model over-produced polls
