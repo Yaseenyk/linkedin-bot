@@ -79,9 +79,27 @@ def read_urls():
     return _read_lines(URLS_FILE)
 
 
+GATE = re.compile(r"^\[from (\d{4}-\d{2}-\d{2})\]\s*")
+
+
+def _strip_gate(raw_topic):
+    return GATE.sub("", raw_topic)
+
+
 def read_topics():
-    """topics.txt: standalone post topics, consumed top-down."""
-    return _read_lines(TOPICS_FILE)
+    """topics.txt: standalone post topics, consumed top-down.
+
+    A line starting with "[from YYYY-MM-DD] " is held back until that UTC
+    date, then takes its place in the order like any other line.
+    """
+    today = datetime.now(timezone.utc).strftime("%Y-%m-%d")
+    out = []
+    for line in _read_lines(TOPICS_FILE):
+        m = GATE.match(line)
+        if m and m.group(1) > today:
+            continue
+        out.append(line)
+    return out
 
 
 def remove_topic(topic):
@@ -101,7 +119,7 @@ def parse_topic(raw_topic):
     portfolio home with the default CTA phrasing. url/cta default when
     omitted, so every pre-existing topic (no '|') behaves exactly as before.
     """
-    parts = [p.strip() for p in raw_topic.split("|")]
+    parts = [p.strip() for p in _strip_gate(raw_topic).split("|")]
     text = parts[0]
     url = parts[1] if len(parts) > 1 and parts[1] else PORTFOLIO_URL
     cta_label = parts[2] if len(parts) > 2 and parts[2] else "More of how I build this, with the code"
@@ -109,7 +127,7 @@ def parse_topic(raw_topic):
 
 
 def topic_key(raw_topic):
-    text = raw_topic.split("|", 1)[0].strip()
+    text = _strip_gate(raw_topic).split("|", 1)[0].strip()
     slug = re.sub(r"[^a-z0-9]+", "-", text.lower()).strip("-")[:80]
     return f"topic:{slug}"
 
@@ -238,7 +256,7 @@ FACTS = """VERIFIED FACTS ABOUT THE AUTHOR'S OWN SYSTEMS (the only first-person 
 - streamerOS: desktop cockpit for streamers (real-time chat ingestion, telemetry, OBS automation).
 - Path Saathi: a client LMS taken from a Monday MVP brief to a working platform live on a dev environment the next day. No other delivery-time claims exist.
 - Job search (from the author's own application records, supplied by the author on 2026-11-13): more than 200 job applications since mid-2024, about two and a half years. Most ended in automated rejections or silence, and referral requests often went unanswered. One rejection for a full-stack developer role came after the interview stage, in a message that praised how thoughtful and clear the conversations had been. Another process reached the second-round (L2) discussion at a large enterprise software company and did not end in an offer. Never name a company that interviewed or rejected the author. Through the search the author kept shipping his own projects (streamerOS, IntegrateX, FitRank).
-- Background: Bachelor of Engineering in Computer Science and Engineering, graduated 2021, plus a coding bootcamp afterwards. Earlier paid roles: software developer building backend services, then full-stack engineer. The author works full-time as a senior software developer and architect, and his last working day in that role is 30 November 2026. Never name the employer. The reason he is leaving and what comes next are not known: never say or imply he resigned, was laid off or was fired, and never say he has or lacks a next job. Of the 200-plus applications, at least five became real interview processes (say "a handful" or "at least five", never a larger or exact number). The roles he wants: senior full-stack (MERN) plus AI engineer, or AI engineer, in Hyderabad or remote. No other employment, education or job-search details exist; do not add feelings, dates, counts or outcomes beyond these."""
+- Background: Bachelor of Engineering in Computer Science and Engineering, graduated 2021, plus a coding bootcamp afterwards. Earlier paid roles: software developer building backend services, then full-stack engineer. The author was laid off from his full-time role as a senior software developer and architect; his last working day is 30 November 2026. He has no next job lined up and is actively looking, open to work from 1 December 2026. Never name the employer, never give a reason for the layoff, and never criticise the employer. Mention the layoff or his availability only when the TOPIC itself is about it. Of the 200-plus applications, at least five became real interview processes (say "a handful" or "at least five", never a larger or exact number). The roles he wants: senior full-stack (MERN) plus AI engineer, or AI engineer, in Hyderabad or remote. No other employment, education or job-search details exist; do not add feelings, dates, counts or outcomes beyond these."""
 
 
 def generate_linkedin_content(title, content, cta, want_poll=False, source="article"):

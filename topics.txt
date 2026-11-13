@@ -21,9 +21,12 @@
 #
 # ---- Series 0f topics (the author's real job search, facts added to FACTS on 13 Nov 2026) are
 # ---- interleaved through the series below so they do not run back to back. No company names.
+# Held until 1 Dec 2026 (the day after the last working day), then it goes out first.
+[from 2026-12-01] I was laid off, and my last working day was 30 November. From today I am open to senior full-stack (MERN) plus AI engineer roles, in Hyderabad or remote. Here is what I bring, and how you can check every claim yourself | https://yk.streamerosai.com/hire/ | Everything I have built, and how to reach me
+# Poll slot on 17 Nov takes the opinion topic; the 200-applications story follows as a full post.
+Unpopular opinion: vibe-coding is fine for a weekend prototype and a liability anywhere real data is involved, and the line between the two is thinner than most people admit
 I have applied to more than 200 jobs since mid-2024. Here is what two and a half years of rejections taught me that no tutorial did | https://yk.streamerosai.com/hire/ | What I built in the meantime
 # ---- Series 0a: AI opinions and hot takes (genuinely held, Claude Code is the real daily tool)
-Unpopular opinion: vibe-coding is fine for a weekend prototype and a liability anywhere real data is involved, and the line between the two is thinner than most people admit
 I do not let an AI agent write to a database without asking first. That one rule shaped how I built an entire finance app | https://yk.streamerosai.com/products/sable/ | See the propose-then-commit rule
 The rejection that stayed with me came after the interviews, in a message praising how clear and thoughtful the conversations had been. What a kind no still teaches you
 The scariest AI output is not the one that is wrong. It is the one that is confidently, plausibly wrong, and why every AI feature I ship has to admit what it does not know
