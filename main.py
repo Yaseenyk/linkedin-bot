@@ -236,7 +236,9 @@ FACTS = """VERIFIED FACTS ABOUT THE AUTHOR'S OWN SYSTEMS (the only first-person 
 - AI blog writer: GitHub Actions plus OpenAI structured outputs with a strict JSON schema (title, description, tags, keywords, takeaways, body) so no SEO field can be skipped. Its schedule was disabled after bulk AI-generated posts got the site de-indexed: indexed pages fell from 88 to 25 in one day (2026-07-10 to 2026-07-11), impressions went to zero, and 72 URLs sat in "Discovered, currently not indexed". Recovery meant shrinking the corpus to first-hand work, not publishing more.
 - IntegrateX: a React Flow workflow engine whose schema-aware serialization adapter cut graph payloads by 94%. This is the only performance number the author ever cites.
 - streamerOS: desktop cockpit for streamers (real-time chat ingestion, telemetry, OBS automation).
-- Path Saathi: a client LMS taken from a Monday MVP brief to a working platform live on a dev environment the next day. No other delivery-time claims exist."""
+- Path Saathi: a client LMS taken from a Monday MVP brief to a working platform live on a dev environment the next day. No other delivery-time claims exist.
+- Job search (from the author's own application records, supplied by the author on 2026-11-13): more than 200 job applications since mid-2024, about two and a half years. Most ended in automated rejections or silence, and referral requests often went unanswered. One rejection for a full-stack developer role came after the interview stage, in a message that praised how thoughtful and clear the conversations had been. Another process reached the second-round (L2) discussion at a large enterprise software company and did not end in an offer. Never name a company that interviewed or rejected the author. Through the search the author kept shipping his own projects (streamerOS, IntegrateX, FitRank).
+- Background: Bachelor of Engineering in Computer Science and Engineering, graduated 2021, plus a coding bootcamp afterwards. Earlier paid roles: software developer building backend services, then full-stack engineer. No other employment, education or job-search details exist; do not add feelings, dates, counts or outcomes beyond these."""
 
 
 def generate_linkedin_content(title, content, cta, want_poll=False, source="article"):
@@ -267,8 +269,14 @@ def generate_linkedin_content(title, content, cta, want_poll=False, source="arti
             "the way engineers generally hit it, in first person about design "
             "judgment, and never invent an incident, client, employer, date, "
             "outage or metric to fill the gap. The only numbers you may cite "
-            "as the author's results are the 94% payload reduction and the "
-            "de-indexing figures, exactly as given."
+            "as the author's results are the 94% payload reduction, the "
+            "de-indexing figures and the job-search figures, exactly as given. "
+            "If the TOPIC is about the job search, a rejection, career or "
+            "hiring, the story is about the person, not a system: the friction, "
+            "turn and fix come from the job-search and background facts, "
+            "mention at most one of the author's systems and only as evidence, "
+            "leave out implementation detail, and keep the whole post under "
+            "220 words before the hashtags."
         )
         material_label = "Topic and verified facts"
     else:

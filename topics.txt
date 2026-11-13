@@ -19,17 +19,25 @@
 # ---- can be interrogated, not announced. Roughly two months of posting at
 # ---- 3 slots/week; the Series 1-5 technical topics below resume after.
 #
+# ---- Series 0f topics (the author's real job search, facts added to FACTS on 13 Nov 2026) are
+# ---- interleaved through the series below so they do not run back to back. No company names.
+I have applied to more than 200 jobs since mid-2024. Here is what two and a half years of rejections taught me that no tutorial did | https://yk.streamerosai.com/hire/ | What I built in the meantime
 # ---- Series 0a: AI opinions and hot takes (genuinely held, Claude Code is the real daily tool)
 Unpopular opinion: vibe-coding is fine for a weekend prototype and a liability anywhere real data is involved, and the line between the two is thinner than most people admit
 I do not let an AI agent write to a database without asking first. That one rule shaped how I built an entire finance app | https://yk.streamerosai.com/products/sable/ | See the propose-then-commit rule
+The rejection that stayed with me came after the interviews, in a message praising how clear and thoughtful the conversations had been. What a kind no still teaches you
 The scariest AI output is not the one that is wrong. It is the one that is confidently, plausibly wrong, and why every AI feature I ship has to admit what it does not know
 Why "it passed the tests" stopped meaning anything to me the moment an AI agent started writing the tests too
+Most of my 200-plus job applications never reached a human. So I stopped polishing the resume and built a portfolio a recruiter can question instead | https://yk.streamerosai.com/hire/ | Ask it something yourself
 An AI wrote most of my last ten blog drafts. The one thing it still cannot do is the actual reason anyone gets hired | https://yk.streamerosai.com/hire/ | What I look for instead
 #
 # ---- Series 0b: the de-indexing crash, honestly, as the setback-and-recovery story it actually was
 My site's indexed pages went from 88 to 25 in a single day. Here is exactly what I did in the 48 hours after | https://yk.streamerosai.com/blog/zero-dollar-content-engine/ | The full story
+I reached the second-round discussion at a large enterprise software company and still did not get the offer. What a near miss says about how hiring really works
 I automated my content pipeline so well it broke Google's trust in my site. The fix was not smarter automation. It was less of it
 Impressions hit zero overnight. Every instinct said publish more to compensate. The fix was the opposite
+A computer science degree in 2021, a bootcamp after it, and 200 applications later: the thing that kept me employable was none of the three | https://yk.streamerosai.com/projects/ | See what I shipped instead
+What kept me going through two years of automated rejections and unanswered referrals was not motivation. It was shipping something every month
 What watching a site get de-indexed taught me about the difference between content that fills a feed and content that earns one
 #
 # ---- Series 0c: the solo-builder path (5 products, 12 months, no team) as a career narrative, not an announcement
