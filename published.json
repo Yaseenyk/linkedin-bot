@@ -1026,5 +1026,17 @@
       "Writes after confirmation",
       "No real data ever"
     ]
+  },
+  "topic:i-have-been-laid-off-and-my-last-working-day-is-30-november-from-1-december-i-am": {
+    "status": "published",
+    "type": "post",
+    "source": "topic",
+    "timestamp": "2026-11-18T18:33:15.915597+00:00",
+    "title": "I have been laid off, and my last working day is 30 November. From 1 December I am open to senior full-stack (MERN) plus AI engineer roles, in Hyderabad or remote, and I can join immediately with no notice period. Here is what I bring, and how you can check every claim yourself",
+    "image_url": "",
+    "linkedin_post_id": "urn:li:share:7528888068603564032",
+    "topic": "I have been laid off, and my last working day is 30 November. From 1 December I am open to senior full-stack (MERN) plus AI engineer roles, in Hyderabad or remote, and I can join immediately with no notice period. Here is what I bring, and how you can check every claim yourself",
+    "post": "The layoff arrived before the offer did.\n\nMy last working day as a senior software developer and architect is 30 November 2026. I do not have the next role lined up.\n\nThat sentence hits differently after more than 200 applications since mid-2024. Most ended in automated rejections, silence, or referral requests that never came back.\n\nA handful turned into real interview processes. One rejection after the interview stage even said the conversations were thoughtful and clear, which was kind, but still not an offer.\n\nThe turn for me was accepting that \u201cI build full-stack and AI systems\u201d is too easy to say and too hard to trust.\n\nSo I stopped relying on adjectives. I made the work inspectable.\n\nMy stack is MERN with TypeScript and Next.js, Python for automation, and Cloudflare Workers where it makes sense. One example: IntegrateX, a React Flow workflow engine where a schema-aware serialization adapter cut graph payloads by 94%.\n\nFrom 1 December 2026, I am open to senior full-stack MERN plus AI engineer roles, or AI engineer roles, in Hyderabad or remote. I can join immediately with no notice period.\n\n- Make claims that can be checked, not just believed.\n\n- Keep shipping even when the inbox is mostly rejection.\n\n- If you need someone senior, ask for evidence of judgment, not just years.\n\nIf you were hiring for this role, what would you want to verify first?\n\n#OpenToWork #MERNStack #FullStackDeveloper #AIEngineer #TypeScript #NextJS #HyderabadJobs #RemoteJobs\n\nEverything I have built, and how to reach me: https://yk.streamerosai.com/hire/?utm_source=linkedin&utm_medium=social&utm_campaign=auto-pipeline",
+    "has_image": true
   }
 }
