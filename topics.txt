@@ -23,7 +23,6 @@
 # ---- interleaved through the series below so they do not run back to back. No company names.
 # Held until Wed 18 Nov 2026 (a full-post slot), then it goes out first.
 # Poll slot on 17 Nov takes the opinion topic; the 200-applications story follows as a full post.
-I have applied to more than 200 jobs since mid-2024. Here is what two and a half years of rejections taught me that no tutorial did | https://yk.streamerosai.com/hire/ | What I built in the meantime
 # ---- Series 0a: AI opinions and hot takes (genuinely held, Claude Code is the real daily tool)
 I do not let an AI agent write to a database without asking first. That one rule shaped how I built an entire finance app | https://yk.streamerosai.com/products/sable/ | See the propose-then-commit rule
 The rejection that stayed with me came after the interviews, in a message praising how clear and thoughtful the conversations had been. What a kind no still teaches you
