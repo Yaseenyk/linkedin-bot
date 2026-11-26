@@ -1073,5 +1073,23 @@
     "topic": "I do not let an AI agent write to a database without asking first. That one rule shaped how I built an entire finance app",
     "post": "The scariest database bug was the one I prevented.\n\nI was building Sable, a local-first finance agent in React Native, with SQLite on the device and OpenAI function calling in the loop.\n\nThe uncomfortable part was not the model reading data. It was the moment a friendly assistant becomes the thing that can write to someone's financial database.\n\nThe obvious implementation was also the dangerous one: map function calls straight to SQLite mutations, trust the schema, and let the agent feel fast.\n\nThat works right up until a vague prompt, a bad extraction, or an overconfident model turns a user request into rows the user never meant to create.\n\nThe turn came from another tool I had already built.\n\nMy job outreach drafter uses AI too, but it only returns a draft. It can propose words; I still send the email.\n\nSo I made that boundary the architecture.\n\nIn Sable, the model can propose a database write, not perform one. The app renders the intended change in human terms, waits for confirmation, and only then commits to SQLite.\n\nThat sounds slower, but it changes the failure mode. A bad tool call becomes a bad suggestion, not corrupted local state.\n\nThe same rule also keeps the code honest. The write path is normal application code with validation and explicit commit behavior, not a hidden side effect buried inside an LLM response.\n\n- Treat LLM function calls as proposals when state matters.\n\n- Put the confirmation boundary before the database, not after logging.\n\n- If an AI mistake would require a data repair script, it should probably ask first.\n\nWhere do you draw the line between agent autonomy and explicit user confirmation?\n\n#AIEngineering #ReactNative #SQLite #OpenAI #FunctionCalling #LocalFirst #SoftwareArchitecture #LLMOps\n\nSee the propose-then-commit rule: https://yk.streamerosai.com/products/sable/?utm_source=linkedin&utm_medium=social&utm_campaign=auto-pipeline",
     "has_image": true
+  },
+  "topic:the-rejection-that-stayed-with-me-came-after-the-interviews-in-a-message-praisin": {
+    "status": "published",
+    "type": "poll",
+    "source": "topic",
+    "timestamp": "2026-11-26T19:22:08.753531+00:00",
+    "title": "The rejection that stayed with me came after the interviews, in a message praising how clear and thoughtful the conversations had been. What a kind no still teaches you",
+    "image_url": "",
+    "linkedin_post_id": "urn:li:ugcPost:7531799471823921152",
+    "topic": "The rejection that stayed with me came after the interviews, in a message praising how clear and thoughtful the conversations had been. What a kind no still teaches you",
+    "commentary": "The kind rejection hurt more than silence.\n\nAfter more than 200 applications and only a handful of real interview loops, one no stuck because it praised the conversations and still ended the process.\n\nIt changed how I think about automation: my outreach drafter can help me write, but it must never mirror a job description's stack as experience I don't actually have.\n\n#JobSearch #SoftwareEngineering #AIEngineering #MERNStack #Hiring #CareerGrowth #DeveloperTools\n\nMore of how I build this, with the code: https://yk.streamerosai.com/?utm_source=linkedin&utm_medium=social&utm_campaign=auto-pipeline",
+    "question": "When automating job-application drafts, what boundary would you enforce?",
+    "options": [
+      "Strict allowlist only",
+      "Optimize for ATS",
+      "Human-written only",
+      "Decide case by case"
+    ]
   }
 }

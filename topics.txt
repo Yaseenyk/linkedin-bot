@@ -24,7 +24,6 @@
 # Held until Wed 18 Nov 2026 (a full-post slot), then it goes out first.
 # Poll slot on 17 Nov takes the opinion topic; the 200-applications story follows as a full post.
 # ---- Series 0a: AI opinions and hot takes (genuinely held, Claude Code is the real daily tool)
-The rejection that stayed with me came after the interviews, in a message praising how clear and thoughtful the conversations had been. What a kind no still teaches you
 The scariest AI output is not the one that is wrong. It is the one that is confidently, plausibly wrong, and why every AI feature I ship has to admit what it does not know
 Why "it passed the tests" stopped meaning anything to me the moment an AI agent started writing the tests too
 Most of my 200-plus job applications never reached a human. So I stopped polishing the resume and built a portfolio a recruiter can question instead | https://yk.streamerosai.com/hire/ | Ask it something yourself
